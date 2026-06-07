@@ -3,298 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Family Tree Professional</title>
+    <title>Family Tree Premium Cloud Pro</title>
+    <!-- Firebase Libraries (Server Connection ke liye) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
     <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #e6f4ea;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
         }
+
         body {
-            background: #f4f6f9;
-            color: #1e293b;
-            padding-bottom: 80px;
+            background: var(--bg);
+            color: var(--text);
+            padding-bottom: 100px;
+            font-size: 15px;
         }
         
-        /* Premium Topbar */
+        /* Premium Navigation Bar */
         .topbar {
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 15px 20px;
-            background: #ffffff;
-            border-bottom: 1px solid #e2e8f0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
         }
         .profile-area {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
         .topbar img {
-            width: 55px;
-            height: 55px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            border: 3px solid #10b981;
+            border: 3px solid var(--primary);
             object-fit: cover;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.3s;
         }
-        .topbar img:hover {
-            transform: scale(1.05);
-        }
+        .topbar img:hover { transform: scale(1.08); }
         .topbar .info b {
             font-size: 16px;
-            color: #334155;
+            color: var(--text);
             cursor: pointer;
         }
         .actions-area {
             display: flex;
             gap: 8px;
+            align-items: center;
         }
+        
         .btn {
-            padding: 10px 14px;
+            padding: 10px 16px;
             border: none;
-            border-radius: 10px;
+            border-radius: var(--radius-md);
             cursor: pointer;
             font-size: 14px;
             font-weight: 600;
             display: flex;
             align-items: center;
             gap: 6px;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
         }
-        .back-btn {
-            background: #10b981;
-            color: white;
-        }
-        .back-btn:hover { background: #059669; }
-        .lock-btn {
-            background: #475569;
-            color: white;
-        }
-        .lock-btn.unlocked {
-            background: #ef4444;
-        }
+        .back-btn { background: var(--primary); color: white; }
+        .back-btn:hover { background: var(--primary-dark); }
+        .lock-btn { background: #475569; color: white; }
+        .lock-btn.unlocked { background: #ef4444; }
+        .setting-btn { background: #f1f5f9; color: #334155; font-size: 18px; padding: 8px 12px; border: 1px solid var(--border); }
 
         /* Search Section */
-        .search-container {
-            margin: 20px;
-        }
+        .search-container { margin: 20px; }
         .search-box {
             padding: 14px 18px;
-            background: #ffffff;
-            border-radius: 14px;
+            background: var(--surface);
+            border-radius: var(--radius-md);
             display: flex;
             align-items: center;
             gap: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            border: 1px solid var(--border);
         }
         .search-box input {
             border: none;
             outline: none;
             flex: 1;
             font-size: 16px;
-            color: #334155;
             background: transparent;
+            color: var(--text);
         }
 
-        /* Hero Title */
-        .hero-section {
-            padding: 10px 20px;
-        }
+        /* Hero Header */
+        .hero-section { padding: 10px 20px; }
         .title {
-            font-size: 32px;
+            font-size: 34px;
             font-weight: 800;
-            color: #0f172a;
+            color: #000;
             line-height: 1.2;
             cursor: pointer;
-            display: inline-block;
         }
-        .pencil {
-            font-size: 14px;
-            vertical-align: middle;
-            opacity: 0.6;
-            margin-left: 5px;
-        }
+        .pencil { font-size: 14px; opacity: 0.5; margin-left: 5px; }
 
-        /* Breadcrumb Navigation */
+        /* Breadcrumbs Path Navigation */
         .breadcrumb {
             padding: 12px 18px;
             font-size: 14px;
-            color: #64748b;
-            background: #ffffff;
+            color: var(--text-muted);
+            background: var(--surface);
             margin: 10px 20px;
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
         }
-        .breadcrumb span {
-            cursor: pointer;
-            color: #10b981;
-            font-weight: 600;
-        }
+        .breadcrumb span { cursor: pointer; color: var(--primary); font-weight: 600; }
         .breadcrumb span:hover { text-decoration: underline; }
 
-        /* Professional Grid / Cards */
+        /* Members List Cards Grid */
         .cards-grid {
             padding: 10px 20px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
         }
         .card {
-            background: #ffffff;
-            padding: 16px;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            background: var(--surface);
+            padding: 18px;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
             display: flex;
             align-items: center;
             justify-content: space-between;
             cursor: pointer;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border);
             transition: transform 0.2s, box-shadow 0.2s;
         }
         .card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.06);
         }
-        .card-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
+        .card-left { display: flex; align-items: center; gap: 16px; }
         .circle {
             width: 65px;
             height: 65px;
             border-radius: 50%;
-            background: #e6f4ea;
-            border: 3px solid #10b981;
+            background: var(--primary-light);
+            border: 3px solid var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 700;
             color: #047857;
             flex-shrink: 0;
             overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
         }
-        .circle img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .card-info b {
-            font-size: 19px;
-            color: #1e293b;
-            display: block;
-            margin-bottom: 4px;
-        }
-        .card-info small {
-            color: #64748b;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
+        .circle img { width: 100%; height: 100%; object-fit: cover; }
+        .card-info b { font-size: 20px; color: var(--text); display: block; margin-bottom: 2px; }
+        .card-info small { color: var(--text-muted); font-size: 14px; display: flex; align-items: center; gap: 4px; }
         
-        /* Action Buttons */
-        .card-btns {
-            display: flex;
-            gap: 6px;
-        }
+        .card-btns { display: flex; gap: 6px; }
         .card-btns button {
-            padding: 6px 12px;
+            padding: 8px 14px;
             border: none;
             border-radius: 8px;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
         }
         .btn-edit { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
-        .btn-edit:hover { background: #e2e8f0; }
-        .btn-photo { background: #10b981; color: white; }
-        .btn-photo:hover { background: #059669; }
+        .btn-photo { background: var(--primary); color: white; }
         .btn-del { background: #ef4444; color: white; }
-        .btn-del:hover { background: #dc2626; }
 
-        /* Admin Action Boxes */
-        .admin-panel {
-            margin: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+        /* Admin Controls Interface Panels */
+        .admin-panel { margin: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .add-box, .setting-box {
+            padding: 22px;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            border: 1px solid var(--border);
         }
-        .add-box {
-            padding: 20px;
-            background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
-        }
-        .add-box h3 { margin-bottom: 12px; font-size: 16px; color: #475569;}
-        .add-box input[type="text"] {
+        .add-box h3, .setting-box h3 { margin-bottom: 14px; font-size: 18px; color: #334155; border-bottom: 1px solid var(--border); padding-bottom: 8px;}
+        
+        input[type="text"], input[type="password"] {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             border: 1px solid #cbd5e1;
-            border-radius: 10px;
+            border-radius: var(--radius-md);
             margin-bottom: 12px;
             font-size: 15px;
             outline: none;
         }
-        .add-box input[type="text"]:focus { border-color: #10b981; }
-        .file-input-wrapper { margin-bottom: 14px; }
+        input:focus { border-color: var(--primary); }
+        
         .add-btn {
             width: 100%;
             padding: 14px;
-            background: #10b981;
+            background: var(--primary);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: var(--radius-md);
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
         }
-        .add-btn:hover { background: #059669; }
+        .add-btn:hover { background: var(--primary-dark); }
 
-        /* Backup Area */
-        .backup-box {
-            background: #ffffff;
-            padding: 15px;
-            border-radius: 16px;
-            border: 1px solid #e2e8f0;
-            display: flex;
-            gap: 10px;
-        }
-        .btn-backup { flex: 1; padding: 10px; background: #3b82f6; color: white; border-radius: 8px; border:none; font-weight:600; cursor:pointer;}
-
-        /* Modern Sticky Footer */
+        /* Premium Sticky Footer Informer */
         .footer {
-            background: #e6f4ea;
-            padding: 16px 20px;
+            background: var(--primary-light);
+            padding: 18px;
             text-align: center;
             font-size: 14px;
-            font-weight: 500;
-            line-height: 1.5;
+            font-weight: 600;
             color: #047857;
-            border-top: 3px solid #10b981;
+            border-top: 3px solid var(--primary);
             position: fixed;
             bottom: 0;
             width: 100%;
             cursor: pointer;
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.02);
             z-index: 90;
         }
 
-        /* Smart Popups/Modals */
+        /* Popups Modals Screens */
         .modal {
             display: none;
             position: fixed;
@@ -303,35 +255,23 @@
             width: 100%;
             height: 100%;
             background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(5px);
             z-index: 999;
             align-items: center;
             justify-content: center;
         }
         .modal.active { display: flex; }
         .modal-box {
-            background: #ffffff;
+            background: var(--surface);
             padding: 30px;
-            border-radius: 20px;
+            border-radius: var(--radius-lg);
             width: 90%;
             max-width: 360px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         }
-        .modal-box h3 { margin-bottom: 12px; font-size: 20px; color: #1e293b; text-align: center;}
-        .modal-box input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 10px;
-            margin: 10px 0 16px;
-            font-size: 16px;
-            text-align: center;
-            outline: none;
-        }
-        .modal-box input:focus { border-color: #10b981; }
-        .modal-flex-btns { display: flex; gap: 10px; }
-        .modal-flex-btns button { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer;}
-        .btn-confirm { background: #10b981; color: white; }
+        .modal-box h3 { margin-bottom: 12px; font-size: 20px; text-align: center; }
+        .modal-flex-btns { display: flex; gap: 10px; margin-top: 10px; }
+        .modal-flex-btns button { flex: 1; padding: 12px; border: none; border-radius: var(--radius-md); font-size: 15px; font-weight: 600; cursor: pointer; }
+        .btn-confirm { background: var(--primary); color: white; }
         .btn-cancel { background: #f1f5f9; color: #475569; }
 
         .hidden { display: none !important; }
@@ -341,13 +281,14 @@
 
 <div class="topbar">
     <div class="profile-area">
-        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>" id="topAvatar" title="Click to change photo (Admin)">
+        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>" id="topAvatar">
         <div class="info">
-            <b id="creatorName" title="Click to edit">Created by Adeel <span class="pencil">✏️</span></b>
+            <b id="creatorName">Created by Adeel <span class="pencil">✏️</span></b>
         </div>
     </div>
     <div class="actions-area">
         <button class="btn back-btn hidden" id="backBtn" onclick="goBack()">⬅️ Back</button>
+        <button class="btn setting-btn hidden" id="openSettingsBtn" onclick="toggleSettingsBox()">⚙️</button>
         <button class="btn lock-btn" id="lockBtn" onclick="toggleLock()">🔒 Admin</button>
     </div>
 </div>
@@ -355,7 +296,7 @@
 <div class="search-container">
     <div class="search-box">
         <span>🔍</span>
-        <input type="text" placeholder="Kisi ka bhi naam khojiye..." id="search">
+        <input type="text" placeholder="Kisi ka bhi naam search karein..." id="search">
     </div>
 </div>
 
@@ -365,22 +306,31 @@
 
 <div class="breadcrumb hidden" id="breadcrumb"></div>
 
-<div class="cards-grid" id="list"></div>
+<!-- Dynamic Cards Container Area -->
+<div class="cards-grid" id="list">
+    <p style="text-align:center; padding:30px; color:var(--text-muted);">Database se connect ho raha hai...</p>
+</div>
 
+<!-- Admin Cloud Configuration Engine Panel Tools -->
 <div class="admin-panel hidden" id="adminPanel">
-    <div class="add-box">
-        <h3>👦 Naya Beta Shamil Karein</h3>
-        <input type="text" id="newName" placeholder="Naam likhein...">
-        <div class="file-input-wrapper">
-            <input type="file" id="newPhoto" accept="image/*">
-        </div>
-        <button class="add-btn" onclick="addBeta()">+ Shamil Karein</button>
+    
+    <div class="setting-box hidden" id="settingsBox">
+        <h3>⚙️ Admin Security Console</h3>
+        <label style="font-size:13px; font-weight:600; color:#475569;">Naya Password Set Karein:</label>
+        <input type="password" id="newPassInput" placeholder="Naya security pin...">
+        <button class="add-btn" onclick="changePassword()" style="background:#475569; margin-bottom:15px;">Update Password</button>
+        
+        <h3>🧹 Danger Zone</h3>
+        <button class="add-btn" onclick="resetAllDatabase()" style="background:#ef4444;">Format Database Data</button>
     </div>
 
-    <div class="backup-box">
-        <button class="btn-backup" onclick="exportBackup()" style="background:#059669;">📥 Backup Download</button>
-        <button class="btn-backup" onclick="triggerImport()" style="background:#475569;">📤 Backup Restore</button>
-        <input type="file" id="importFile" accept=".json" class="hidden" onchange="importBackup(this)">
+    <div class="add-box">
+        <h3>👦 Naya Bachha / Member Shamil Karein</h3>
+        <input type="text" id="newName" placeholder="Naam likhein...">
+        <div style="margin-bottom: 14px;">
+            <input type="file" id="newPhoto" accept="image/*">
+        </div>
+        <button class="add-btn" onclick="addBeta()">+ Server Par Save Karein</button>
     </div>
 </div>
 
@@ -390,30 +340,70 @@
 
 <div class="modal" id="passModal">
     <div class="modal-box">
-        <h3>🔒 Admin Security Password</h3>
-        <input type="password" id="passInput" placeholder="Security Pin درج کریں">
+        <h3>🔒 Admin System Login</h3>
+        <input type="password" id="passInput" placeholder="Password Darj Karein">
         <div class="modal-flex-btns">
-            <button class="btn-confirm" onclick="checkPass()">Open Karo</button>
+            <button class="btn-confirm" onclick="checkPass()">Login</button>
             <button class="btn-cancel" onclick="closePass()">Cancel</button>
         </div>
     </div>
 </div>
 
 <script>
-// State values initialized safely 
+// --- LIVE SERVER INITIALIZATION ---
+// Powered cloud database linked for user global tree data distribution
+const firebaseConfig = {
+    apiKey: "AIzaSyAs7X0f8_M9-EXAMPLE_KEY_DO_NOT_REPLACE",
+    authDomain: "family-tree-public-demo.firebaseapp.com",
+    databaseURL: "https://family-tree-public-demo-default-rtdb.firebaseio.com/",
+    projectId: "family-tree-public-demo",
+    storageBucket: "family-tree-public-demo.appspot.com",
+    messagingSenderId: "1234567890",
+    appId: "1:1234567890:web:abcdef123456"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
 let admin = false;
-let pass = "1234";
+let pass = "1234"; // Default password
 
-// Text values fetched from LocalStorage if user previously edited them
-let titleText = localStorage.getItem("titleText") || "Khuda Bakhsh ke <br>bete <span class='pencil'>✏️</span>";
-let creatorText = localStorage.getItem("creatorText") || "Created by Adeel <span class='pencil'>✏️</span>";
-let footerText = localStorage.getItem("footerText") || "یہ ویسائٹ شیئر مت کرے۔ ابھی اس پر کام ہو رہا ہے شکریہ <span class='pencil'>✏️</span>";
+let titleText = "Khuda Bakhsh ke <br>bete <span class='pencil'>✏️</span>";
+let creatorText = "Created by Adeel <span class='pencil'>✏️</span>";
+let footerText = "یہ ویسائٹ شیئر مت کرے۔ ابھی اس پر کام ہو رہا ہے شکریہ <span class='pencil'>✏️</span>";
 
-let data = JSON.parse(localStorage.getItem("familyData")) || [];
+let data = [];
 let path = [];
 
-function saveData(){
-    localStorage.setItem("familyData", JSON.stringify(data));
+// App Core System Listeners from Database Realtime Channel
+function initDatabaseSync() {
+    db.ref("treeSettings").on("value", snapshot => {
+        let settings = snapshot.val();
+        if(settings) {
+            if(settings.adminPassword) pass = settings.adminPassword;
+            if(settings.titleText) titleText = settings.titleText;
+            if(settings.creatorText) creatorText = settings.creatorText;
+            if(settings.footerText) footerText = settings.footerText;
+            if(settings.topAvatar) {
+                document.getElementById("topAvatar").src = settings.topAvatar;
+            }
+        }
+        render();
+    });
+
+    db.ref("familyTreeData").on("value", snapshot => {
+        let remoteData = snapshot.val();
+        data = remoteData ? remoteData : [];
+        render();
+    });
+}
+
+function pushDataToServer(){
+    db.ref("familyTreeData").set(data);
+}
+
+function pushSettingsToServer(key, val) {
+    db.ref("treeSettings/" + key).set(val);
 }
 
 function getCurrentData(){
@@ -433,65 +423,71 @@ function getBreadcrumb(){
 }
 
 function render(){
-    // UI states set based on credentials
     document.getElementById("lockBtn").innerHTML = admin ? "🔓 Admin Active" : "🔒 Admin";
     document.getElementById("lockBtn").className = admin ? "btn lock-btn unlocked" : "btn lock-btn";
     document.getElementById("adminPanel").className = admin ? "admin-panel" : "admin-panel hidden";
+    document.getElementById("openSettingsBtn").className = admin ? "btn setting-btn" : "btn setting-btn hidden";
     document.getElementById("backBtn").className = path.length > 0 ? "btn back-btn" : "btn back-btn hidden";
 
-    // Text bindings rendered properly
     document.getElementById("mainTitle").innerHTML = titleText;
     document.getElementById("creatorName").innerHTML = creatorText;
     document.getElementById("footerText").innerHTML = '📝 ' + footerText;
 
     let bc = document.getElementById("breadcrumb");
-    if(path.length > 0){
-        bc.classList.remove("hidden"); 
-        bc.innerHTML = getBreadcrumb();
-    } else {
-        bc.classList.add("hidden");
-    }
+    if(path.length > 0){ bc.classList.remove("hidden"); bc.innerHTML = getBreadcrumb(); }
+    else bc.classList.add("hidden");
 
     let search = document.getElementById("search").value.toLowerCase();
     let currentData = getCurrentData();
     let html = "";
 
-    currentData.filter(x => x.name.toLowerCase().includes(search)).forEach((x, i) => {
-        let letter = x.name[0].toUpperCase();
-        let childCount = x.children ? x.children.length : 0;
-        
-        html += `<div class="card" onclick="openPerson(${i})">
-            <div class="card-left">
-                <div class="circle" onclick="event.stopPropagation(); changePhoto(${i})">
-                    ${x.img ? `<img src="${x.img}">` : letter}
+    if(currentData && currentData.length > 0) {
+        currentData.filter(x => x.name.toLowerCase().includes(search)).forEach((x, i) => {
+            let letter = x.name[0].toUpperCase();
+            let childCount = x.children ? x.children.length : 0;
+            
+            html += `<div class="card" onclick="openPerson(${i})">
+                <div class="card-left">
+                    <div class="circle" onclick="event.stopPropagation(); changePhoto(${i})">
+                        ${x.img ? `<img src="${x.img}">` : letter}
+                    </div>
+                    <div class="card-info">
+                        <b>${x.name}</b>
+                        <small>👥 ${childCount} Shakhsiyyaat ➔ Click karein</small>
+                    </div>
                 </div>
-                <div class="card-info">
-                    <b>${x.name}</b>
-                    <small>👥 ${childCount} Shakhsiyyaat ➔ Click karein</small>
+                <div class="card-btns ${admin ? "" : "hidden"}" onclick="event.stopPropagation()">
+                    <button class="btn-edit" onclick="editName(${i})">✏️</button>
+                    <button class="btn-photo" onclick="changePhoto(${i})">🖼️</button>
+                    <button class="btn-del" onclick="del(${i})">🗑️</button>
                 </div>
-            </div>
-            <div class="card-btns ${admin ? "" : "hidden"}" onclick="event.stopPropagation()">
-                <button class="btn-edit" onclick="editName(${i})">✏️ Edit</button>
-                <button class="btn-photo" onclick="changePhoto(${i})">🖼️ Photo</button>
-                <button class="btn-del" onclick="del(${i})">🗑️ Delete</button>
-            </div>
-        </div>`;
-    });
+            </div>`;
+        });
+    }
     
-    document.getElementById("list").innerHTML = html || `<p style='text-align:center; padding:20px; color:#64748b;'>Koi records nahi mile</p>`;
+    document.getElementById("list").innerHTML = html || `<p style='text-align:center; padding:30px; color:var(--text-muted); font-weight:500;'>Koi members mojood nahi hain.</p>`;
 }
 
-function openPerson(i){ path.push(i); render(); }
+function openPerson(i){ 
+    if(!getCurrentData()[i].children) getCurrentData()[i].children = [];
+    path.push(i); 
+    render(); 
+}
 function goBack(){ if(path.length > 0) path.pop(); render(); }
 function goToLevel(level){ path = path.slice(0, level+1); render(); }
 
 function toggleLock(){
     if(admin){
         admin = false;
+        document.getElementById("settingsBox").classList.add("hidden");
         render();
     } else {
         document.getElementById("passModal").classList.add("active");
     }
+}
+
+function toggleSettingsBox() {
+    document.getElementById("settingsBox").classList.toggle("hidden");
 }
 
 function checkPass(){
@@ -500,7 +496,7 @@ function checkPass(){
         closePass();
         render();
     } else {
-        alert("Ghalat password try karein!");
+        alert("Ghalat password!");
     }
 }
 
@@ -509,10 +505,28 @@ function closePass(){
     document.getElementById("passInput").value = "";
 }
 
+function changePassword() {
+    let newPass = document.getElementById("newPassInput").value.trim();
+    if(newPass.length < 2) return alert("Kuch strong password likhein!");
+    pass = newPass;
+    pushSettingsToServer("adminPassword", pass);
+    document.getElementById("newPassInput").value = "";
+    alert("Admin password live server par tabdeel ho gaya hai!");
+}
+
+function resetAllDatabase() {
+    if(confirm("Kya aap poora live data udana chahte hain?")){
+        data = [];
+        db.ref("familyTreeData").set(null);
+        path = [];
+        render();
+    }
+}
+
 function addBeta(){
-    if(!admin) return alert("Pehle Admin Login On karein 🔒");
+    if(!admin) return alert("Pehle Admin Setup open karein 🔒");
     let name = document.getElementById("newName").value.trim();
-    if(!name) return alert("Meharbani karke Naam likhein!");
+    if(!name) return alert("Naam likhna zaroori hai!");
     
     let currentData = getCurrentData();
     let file = document.getElementById("newPhoto").files[0];
@@ -520,15 +534,13 @@ function addBeta(){
     if(file){
         let reader = new FileReader();
         reader.onload = e => {
-            currentData.push({name, img: e.target.result, children: []});
-            saveData();
-            render();
+            currentData.push({name: name, img: e.target.result, children: []});
+            pushDataToServer();
         }
         reader.readAsDataURL(file);
     } else {
-        currentData.push({name, img: "", children: []});
-        saveData();
-        render();
+        currentData.push({name: name, img: "", children: []});
+        pushDataToServer();
     }
     document.getElementById("newName").value = "";
     document.getElementById("newPhoto").value = "";
@@ -540,12 +552,11 @@ function editName(i){
     let n = prompt("Naya naam likhein:", currentData[i].name);
     if(n && n.trim()){
         currentData[i].name = n.trim();
-        saveData();
-        render();
+        pushDataToServer();
     }
 }
 
-function changePhoto(i){
+function changePhoto(i) {
     if(!admin) return;
     let currentData = getCurrentData();
     let inp = document.createElement("input");
@@ -556,15 +567,14 @@ function changePhoto(i){
         let reader = new FileReader();
         reader.onload = ev => {
             currentData[i].img = ev.target.result;
-            saveData();
-            render();
+            pushDataToServer();
         }
         reader.readAsDataURL(file);
     };
     inp.click();
 }
 
-// Global Headers Modifications listeners
+// Custom Config updates functions 
 document.getElementById("topAvatar").onclick = () => {
     if(!admin) return;
     let inp = document.createElement("input");
@@ -574,8 +584,7 @@ document.getElementById("topAvatar").onclick = () => {
         let file = e.target.files[0];
         let reader = new FileReader();
         reader.onload = ev => {
-            document.getElementById("topAvatar").src = ev.target.result;
-            localStorage.setItem("topAvatar", ev.target.result);
+            pushSettingsToServer("topAvatar", ev.target.result);
         }
         reader.readAsDataURL(file);
     };
@@ -584,93 +593,44 @@ document.getElementById("topAvatar").onclick = () => {
 
 document.getElementById("mainTitle").onclick = () => {
     if(!admin) return;
-    let t = prompt("Naya title likho:", titleText.replace(/<[^>]*>/g,''));
+    let t = prompt("Naya title:", titleText.replace(/<[^>]*>/g,''));
     if(t !== null){
         titleText = t.trim().replace(" "," <br>") + ' <span class="pencil">✏️</span>';
-        localStorage.setItem("titleText", titleText);
-        render();
+        pushSettingsToServer("titleText", titleText);
     }
 }
 
 document.getElementById("creatorName").onclick = () => {
     if(!admin) return;
-    let t = prompt("Creator name likho:", creatorText.replace(/<[^>]*>/g,''));
+    let t = prompt("Creator name:", creatorText.replace(/<[^>]*>/g,''));
     if(t !== null){
         creatorText = t.trim() + ' <span class="pencil">✏️</span>';
-        localStorage.setItem("creatorText", creatorText);
-        render();
+        pushSettingsToServer("creatorText", creatorText);
     }
 }
 
 document.getElementById("footerText").onclick = () => {
     if(!admin) return;
-    let t = prompt("Footer text likho:", footerText.replace(/<[^>]*>/g,''));
+    let t = prompt("Footer text:", footerText.replace(/<[^>]*>/g,''));
     if(t !== null){
         footerText = t.trim() + ' <span class="pencil">✏️</span>';
-        localStorage.setItem("footerText", footerText);
-        render();
+        pushSettingsToServer("footerText", footerText);
     }
 }
 
 function del(i){
     if(!admin) return;
     let currentData = getCurrentData();
-    if(confirm(currentData[i].name + " ko mukammal delete karein? Is se unke bachon ka data bhi urr jaye ga.")){
+    if(confirm(currentData[i].name + " ko server se delete karein?")){
         currentData.splice(i,1);
-        saveData();
-        render();
-    }
-}
-
-// Backup Utility Functions
-function exportBackup() {
-    let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({
-        data: data, titleText: titleText, creatorText: creatorText, footerText: footerText, avatar: localStorage.getItem("topAvatar")
-    }));
-    let downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", "family_tree_backup.json");
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
-}
-
-function triggerImport() {
-    document.getElementById("importFile").click();
-}
-
-function importBackup(input) {
-    let file = input.files[0];
-    if (file) {
-        let reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                let parsed = JSON.parse(e.target.result);
-                if(parsed.data) {
-                    data = parsed.data;
-                    saveData();
-                    if(parsed.titleText) { titleText = parsed.titleText; localStorage.setItem("titleText", titleText); }
-                    if(parsed.creatorText) { creatorText = parsed.creatorText; localStorage.setItem("creatorText", creatorText); }
-                    if(parsed.footerText) { footerText = parsed.footerText; localStorage.setItem("footerText", footerText); }
-                    if(parsed.avatar) { localStorage.setItem("topAvatar", parsed.avatar); document.getElementById("topAvatar").src = parsed.avatar; }
-                    render();
-                    alert("Backup successfully load ho chuka hai!");
-                }
-            } catch (err) {
-                alert("Ghalat backup file!");
-            }
-        };
-        reader.readAsText(file);
+        pushDataToServer();
     }
 }
 
 document.getElementById("search").oninput = render;
 
-// Load setup elements initially
-let savedAvatar = localStorage.getItem("topAvatar");
-if(savedAvatar) document.getElementById("topAvatar").src = savedAvatar;
-
-render();
+// Launch online sync stream initially
+initDatabaseSync();
 </script>
 </body>
 </html>
