@@ -1,294 +1,672 @@
 <!DOCTYPE html>
 <html lang="ur">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Khuda Bakhsh ke bete</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif}
-body{background:#f8f9fa;color:#1a1a1a}
-.topbar{display:flex;align-items:center;padding:12px 15px;background:#fff;border-bottom:1px solid #e0e0e0}
-.topbar img{width:90px;height:90px;border-radius:50%;border:4px solid #22c55e;object-fit:cover;cursor:pointer}
-.topbar.info{flex:1;margin-left:12px}
-.topbar.info b{display:block;font-size:16px;cursor:pointer}
-.back-btn{padding:8px 12px;background:#22c55e;color:#fff;border:none;border-radius:8px;margin-left:8px;cursor:pointer;font-size:14px;font-weight:600}
-.pencil{margin-left:5px;cursor:pointer;font-size:16px}
-.icon-btn{width:40px;height:40px;border:none;border-radius:10px;margin-left:8px;cursor:pointer;font-size:20px;background:#f1f5f9}
-.lock-btn{background:#15803d;color:#fff;border-radius:10px}
-.lock-btn.unlocked{background:#dc2626}
-.search-box{margin:15px;padding:12px 15px;background:#fff;border-radius:12px;display:flex;align-items:center;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
-.search-box input{border:none;outline:none;flex:1;margin-left:8px;font-size:15px;background:transparent}
-.title{padding:20px 15px 10px;font-size:28px;font-weight:700;display:flex;align-items:center;cursor:pointer}
-.breadcrumb{padding:10px 15px;font-size:14px;color:#64748b;background:#fff;margin:0 15px;border-radius:8px}
-.breadcrumb span{cursor:pointer;color:#22c55e}
-.card{background:#fff;margin:10px 15px;padding:15px;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06);display:flex;align-items:center;cursor:pointer}
-.circle{width:60px;height:60px;border-radius:50%;background:#dcfce7;border:3px solid #22c55e;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#166534;flex-shrink:0;overflow:hidden}
-.circle img{width:100%;height:100%;object-fit:cover}
-.card-info{flex:1;margin-left:15px}
-.card-info b{font-size:18px;display:block}
-.card-info small{color:#64748b;font-size:14px}
-.card-btns{display:flex;flex-direction:column;gap:6px}
-.card-btns button{padding:8px 16px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;min-width:80px}
-.btn-edit{background:#fff;border:1px solid #d1d5db}
-.btn-photo{background:#16a34a;color:#fff}
-.btn-del{background:#dc2626;color:#fff}
-.add-box{margin:15px;padding:15px;background:#fff;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
-.add-box input{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;margin:8px 0;font-size:15px}
-.add-btn{width:100%;padding:14px;background:#22c55e;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer}
-.footer{background:#dcfce7;padding:15px;text-align:center;font-size:13px;line-height:1.6;color:#166534;border-top:3px solid #22c55e;position:sticky;bottom:0;cursor:pointer}
-.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center}
-.modal.active{display:flex}
-.modal-box{background:#fff;padding:25px;border-radius:16px;width:90%;max-width:350px}
-.modal-box h3{margin-bottom:15px}
-.modal-box input{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;margin:8px 0;font-size:16px}
-.modal-box button{width:100%;padding:12px;background:#22c55e;color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;margin-top:8px}
-.hidden{display:none!important}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Tree Professional</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+        }
+        body {
+            background: #f4f6f9;
+            color: #1e293b;
+            padding-bottom: 80px;
+        }
+        
+        /* Premium Topbar */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .profile-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .topbar img {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            border: 3px solid #10b981;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .topbar img:hover {
+            transform: scale(1.05);
+        }
+        .topbar .info b {
+            font-size: 16px;
+            color: #334155;
+            cursor: pointer;
+        }
+        .actions-area {
+            display: flex;
+            gap: 8px;
+        }
+        .btn {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .back-btn {
+            background: #10b981;
+            color: white;
+        }
+        .back-btn:hover { background: #059669; }
+        .lock-btn {
+            background: #475569;
+            color: white;
+        }
+        .lock-btn.unlocked {
+            background: #ef4444;
+        }
+
+        /* Search Section */
+        .search-container {
+            margin: 20px;
+        }
+        .search-box {
+            padding: 14px 18px;
+            background: #ffffff;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+        .search-box input {
+            border: none;
+            outline: none;
+            flex: 1;
+            font-size: 16px;
+            color: #334155;
+            background: transparent;
+        }
+
+        /* Hero Title */
+        .hero-section {
+            padding: 10px 20px;
+        }
+        .title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.2;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .pencil {
+            font-size: 14px;
+            vertical-align: middle;
+            opacity: 0.6;
+            margin-left: 5px;
+        }
+
+        /* Breadcrumb Navigation */
+        .breadcrumb {
+            padding: 12px 18px;
+            font-size: 14px;
+            color: #64748b;
+            background: #ffffff;
+            margin: 10px 20px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+        .breadcrumb span {
+            cursor: pointer;
+            color: #10b981;
+            font-weight: 600;
+        }
+        .breadcrumb span:hover { text-decoration: underline; }
+
+        /* Professional Grid / Cards */
+        .cards-grid {
+            padding: 10px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .card {
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+        .card-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .circle {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background: #e6f4ea;
+            border: 3px solid #10b981;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: #047857;
+            flex-shrink: 0;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .card-info b {
+            font-size: 19px;
+            color: #1e293b;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .card-info small {
+            color: #64748b;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        /* Action Buttons */
+        .card-btns {
+            display: flex;
+            gap: 6px;
+        }
+        .card-btns button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-edit { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+        .btn-edit:hover { background: #e2e8f0; }
+        .btn-photo { background: #10b981; color: white; }
+        .btn-photo:hover { background: #059669; }
+        .btn-del { background: #ef4444; color: white; }
+        .btn-del:hover { background: #dc2626; }
+
+        /* Admin Action Boxes */
+        .admin-panel {
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .add-box {
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+        .add-box h3 { margin-bottom: 12px; font-size: 16px; color: #475569;}
+        .add-box input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            font-size: 15px;
+            outline: none;
+        }
+        .add-box input[type="text"]:focus { border-color: #10b981; }
+        .file-input-wrapper { margin-bottom: 14px; }
+        .add-btn {
+            width: 100%;
+            padding: 14px;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+        }
+        .add-btn:hover { background: #059669; }
+
+        /* Backup Area */
+        .backup-box {
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            gap: 10px;
+        }
+        .btn-backup { flex: 1; padding: 10px; background: #3b82f6; color: white; border-radius: 8px; border:none; font-weight:600; cursor:pointer;}
+
+        /* Modern Sticky Footer */
+        .footer {
+            background: #e6f4ea;
+            padding: 16px 20px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.5;
+            color: #047857;
+            border-top: 3px solid #10b981;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.02);
+            z-index: 90;
+        }
+
+        /* Smart Popups/Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active { display: flex; }
+        .modal-box {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 360px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .modal-box h3 { margin-bottom: 12px; font-size: 20px; color: #1e293b; text-align: center;}
+        .modal-box input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            margin: 10px 0 16px;
+            font-size: 16px;
+            text-align: center;
+            outline: none;
+        }
+        .modal-box input:focus { border-color: #10b981; }
+        .modal-flex-btns { display: flex; gap: 10px; }
+        .modal-flex-btns button { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer;}
+        .btn-confirm { background: #10b981; color: white; }
+        .btn-cancel { background: #f1f5f9; color: #475569; }
+
+        .hidden { display: none !important; }
+    </style>
 </head>
-<body class="locked">
+<body>
 
 <div class="topbar">
-<img src="https://i.pravatar.cc/100" id="topAvatar">
-<div class="info">
-<b id="creatorName">Created by Adeel <span class="pencil">✏️</span></b>
-</div>
-<button class="icon-btn back-btn hidden" id="backBtn" onclick="goBack()">⬅️ Back</button>
-<button class="icon-btn lock-btn" id="lockBtn" onclick="toggleLock()">🔒</button>
+    <div class="profile-area">
+        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>" id="topAvatar" title="Click to change photo (Admin)">
+        <div class="info">
+            <b id="creatorName" title="Click to edit">Created by Adeel <span class="pencil">✏️</span></b>
+        </div>
+    </div>
+    <div class="actions-area">
+        <button class="btn back-btn hidden" id="backBtn" onclick="goBack()">⬅️ Back</button>
+        <button class="btn lock-btn" id="lockBtn" onclick="toggleLock()">🔒 Admin</button>
+    </div>
 </div>
 
-<div class="search-box">
-<span>🔍</span>
-<input type="text" placeholder="Kisi ko bhi search karein..." id="search">
+<div class="search-container">
+    <div class="search-box">
+        <span>🔍</span>
+        <input type="text" placeholder="Kisi ka bhi naam khojiye..." id="search">
+    </div>
 </div>
 
-<h1 class="title" id="mainTitle">Khuda Bakhsh ke <br>bete <span class="pencil">✏️</span></h1>
+<div class="hero-section">
+    <h1 class="title" id="mainTitle">Khuda Bakhsh ke <br>bete <span class="pencil">✏️</span></h1>
+</div>
 
 <div class="breadcrumb hidden" id="breadcrumb"></div>
 
-<div id="list"></div>
+<div class="cards-grid" id="list"></div>
 
-<div class="add-box" id="addBox">
-<input type="text" id="newName" placeholder="👦 Beta ka naam likho">
-<input type="file" id="newPhoto" accept="image/*">
-<button class="add-btn" onclick="addBeta()">+ Add Beta</button>
+<div class="admin-panel hidden" id="adminPanel">
+    <div class="add-box">
+        <h3>👦 Naya Beta Shamil Karein</h3>
+        <input type="text" id="newName" placeholder="Naam likhein...">
+        <div class="file-input-wrapper">
+            <input type="file" id="newPhoto" accept="image/*">
+        </div>
+        <button class="add-btn" onclick="addBeta()">+ Shamil Karein</button>
+    </div>
+
+    <div class="backup-box">
+        <button class="btn-backup" onclick="exportBackup()" style="background:#059669;">📥 Backup Download</button>
+        <button class="btn-backup" onclick="triggerImport()" style="background:#475569;">📤 Backup Restore</button>
+        <input type="file" id="importFile" accept=".json" class="hidden" onchange="importBackup(this)">
+    </div>
 </div>
 
 <div class="footer" id="footerText">
-<span class="pencil">📝</span> یہ ویسائٹ شیئر مت کرے۔ ویسائٹ نہ چلے کی صورت میں بار اوپن مت کرے ابھی اس پر کام ہو رہا ہے شکریہ <span class="pencil">✏️</span>
+    یہ ویسائٹ شیئر مت کرے۔ ابھی اس پر کام ہو رہا ہے شکریہ <span class="pencil">✏️</span>
 </div>
 
 <div class="modal" id="passModal">
-<div class="modal-box">
-<h3>🔒 Admin Password</h3>
-<input type="password" id="passInput" placeholder="1234 likhein">
-<button onclick="checkPass()">Open Karo</button>
-<button onclick="closePass()" style="background:#999">Cancel</button>
-</div>
+    <div class="modal-box">
+        <h3>🔒 Admin Security Password</h3>
+        <input type="password" id="passInput" placeholder="Security Pin درج کریں">
+        <div class="modal-flex-btns">
+            <button class="btn-confirm" onclick="checkPass()">Open Karo</button>
+            <button class="btn-cancel" onclick="closePass()">Cancel</button>
+        </div>
+    </div>
 </div>
 
 <script>
+// State values initialized safely 
 let admin = false;
 let pass = "1234";
-let titleText = "Khuda Bakhsh ke <br>bete <span class='pencil'>✏️</span>";
-let creatorText = "Created by Adeel <span class='pencil'>✏️</span>";
-let footerText = "یہ ویسائٹ شیئر مت کرے۔ ویسائٹ نہ چلے کی صورت میں بار اوپن مت کرے ابھی اس پر کام ہو رہا ہے شکریہ <span class='pencil'>✏️</span>";
+
+// Text values fetched from LocalStorage if user previously edited them
+let titleText = localStorage.getItem("titleText") || "Khuda Bakhsh ke <br>bete <span class='pencil'>✏️</span>";
+let creatorText = localStorage.getItem("creatorText") || "Created by Adeel <span class='pencil'>✏️</span>";
+let footerText = localStorage.getItem("footerText") || "یہ ویسائٹ شیئر مت کرے۔ ابھی اس پر کام ہو رہا ہے شکریہ <span class='pencil'>✏️</span>";
 
 let data = JSON.parse(localStorage.getItem("familyData")) || [];
 let path = [];
 
 function saveData(){
-localStorage.setItem("familyData", JSON.stringify(data));
+    localStorage.setItem("familyData", JSON.stringify(data));
 }
 
 function getCurrentData(){
-let current = data;
-for(let i of path) current = current[i].children;
-return current;
+    let current = data;
+    for(let i of path) current = current[i].children;
+    return current;
 }
 
 function getBreadcrumb(){
-let html = '<span onclick="goToLevel(-1)">Khuda Bakhsh</span>';
-let current = data;
-for(let i=0; i<path.length; i++){
-html += ' → <span onclick="goToLevel('+i+')">'+current[path[i]].name+'</span>';
-current = current[path[i]].children;
-}
-return html;
+    let html = '<span onclick="goToLevel(-1)">Khuda Bakhsh</span>';
+    let current = data;
+    for(let i=0; i<path.length; i++){
+        html += ' ➔ <span onclick="goToLevel('+i+')">'+current[path[i]].name+'</span>';
+        current = current[path[i]].children;
+    }
+    return html;
 }
 
 function render(){
-document.body.className = admin? "" : "locked";
-document.getElementById("lockBtn").innerHTML = admin? "🔓" : "🔒";
-document.getElementById("lockBtn").className = admin? "icon-btn lock-btn unlocked" : "icon-btn lock-btn";
-document.getElementById("addBox").className = admin? "add-box" : "add-box hidden";
-document.getElementById("backBtn").className = path.length>0? "icon-btn back-btn" : "icon-btn back-btn hidden";
+    // UI states set based on credentials
+    document.getElementById("lockBtn").innerHTML = admin ? "🔓 Admin Active" : "🔒 Admin";
+    document.getElementById("lockBtn").className = admin ? "btn lock-btn unlocked" : "btn lock-btn";
+    document.getElementById("adminPanel").className = admin ? "admin-panel" : "admin-panel hidden";
+    document.getElementById("backBtn").className = path.length > 0 ? "btn back-btn" : "btn back-btn hidden";
 
-document.getElementById("mainTitle").innerHTML = titleText;
-document.getElementById("creatorName").innerHTML = creatorText;
-document.getElementById("footerText").innerHTML = '<span class="pencil">📝</span> ' + footerText;
+    // Text bindings rendered properly
+    document.getElementById("mainTitle").innerHTML = titleText;
+    document.getElementById("creatorName").innerHTML = creatorText;
+    document.getElementById("footerText").innerHTML = '📝 ' + footerText;
 
-let bc = document.getElementById("breadcrumb");
-if(path.length>0){bc.className="breadcrumb"; bc.innerHTML=getBreadcrumb();}
-else bc.className="breadcrumb hidden";
+    let bc = document.getElementById("breadcrumb");
+    if(path.length > 0){
+        bc.classList.remove("hidden"); 
+        bc.innerHTML = getBreadcrumb();
+    } else {
+        bc.classList.add("hidden");
+    }
 
-let search = document.getElementById("search").value.toLowerCase();
-let currentData = getCurrentData();
-let html = "";
-currentData.filter(x=>x.name.toLowerCase().includes(search)).forEach((x,i)=>{
-let letter = x.name[0].toUpperCase();
-let childCount = x.children.length;
-html += `<div class="card" onclick="openPerson(${i})">
-<div class="circle" onclick="event.stopPropagation(); changePhoto(${i})">${x.img? `<img src="${x.img}">` : letter}</div>
-<div class="card-info">
-<b>${x.name}</b>
-<small>${childCount} bete → Click karo andar jane ke liye</small>
-</div>
-<div class="card-btns ${admin? "" : "hidden"}" onclick="event.stopPropagation()">
-<button class="btn-edit" onclick="editName(${i})">Edit</button>
-<button class="btn-photo" onclick="changePhoto(${i})">Photo</button>
-<button class="btn-del" onclick="del(${i})">Delete</button>
-</div>
-</div>`;
-});
-document.getElementById("list").innerHTML = html;
+    let search = document.getElementById("search").value.toLowerCase();
+    let currentData = getCurrentData();
+    let html = "";
+
+    currentData.filter(x => x.name.toLowerCase().includes(search)).forEach((x, i) => {
+        let letter = x.name[0].toUpperCase();
+        let childCount = x.children ? x.children.length : 0;
+        
+        html += `<div class="card" onclick="openPerson(${i})">
+            <div class="card-left">
+                <div class="circle" onclick="event.stopPropagation(); changePhoto(${i})">
+                    ${x.img ? `<img src="${x.img}">` : letter}
+                </div>
+                <div class="card-info">
+                    <b>${x.name}</b>
+                    <small>👥 ${childCount} Shakhsiyyaat ➔ Click karein</small>
+                </div>
+            </div>
+            <div class="card-btns ${admin ? "" : "hidden"}" onclick="event.stopPropagation()">
+                <button class="btn-edit" onclick="editName(${i})">✏️ Edit</button>
+                <button class="btn-photo" onclick="changePhoto(${i})">🖼️ Photo</button>
+                <button class="btn-del" onclick="del(${i})">🗑️ Delete</button>
+            </div>
+        </div>`;
+    });
+    
+    document.getElementById("list").innerHTML = html || `<p style='text-align:center; padding:20px; color:#64748b;'>Koi records nahi mile</p>`;
 }
 
-function openPerson(i){path.push(i); render();}
-function goBack(){if(path.length>0) path.pop(); render();}
-function goToLevel(level){path = path.slice(0, level+1); render();}
+function openPerson(i){ path.push(i); render(); }
+function goBack(){ if(path.length > 0) path.pop(); render(); }
+function goToLevel(level){ path = path.slice(0, level+1); render(); }
 
 function toggleLock(){
-if(admin){
-admin = false;
-render();
-}else{
-document.getElementById("passModal").classList.add("active");
-}
+    if(admin){
+        admin = false;
+        render();
+    } else {
+        document.getElementById("passModal").classList.add("active");
+    }
 }
 
 function checkPass(){
-if(document.getElementById("passInput").value === pass){
-admin = true;
-closePass();
-render();
-}else{
-alert("Ghalat password!");
-}
+    if(document.getElementById("passInput").value === pass){
+        admin = true;
+        closePass();
+        render();
+    } else {
+        alert("Ghalat password try karein!");
+    }
 }
 
 function closePass(){
-document.getElementById("passModal").classList.remove("active");
-document.getElementById("passInput").value = "";
+    document.getElementById("passModal").classList.remove("active");
+    document.getElementById("passInput").value = "";
 }
 
 function addBeta(){
-if(!admin) return alert("Pehle Admin On karein 🔒");
-let name = document.getElementById("newName").value.trim();
-if(!name) return alert("Naam likho");
-let currentData = getCurrentData();
-let file = document.getElementById("newPhoto").files[0];
-if(file){
-let reader = new FileReader();
-reader.onload = e => {
-currentData.push({name,img:e.target.result,children:[]});
-saveData();
-render();
-}
-reader.readAsDataURL(file);
-}else{
-currentData.push({name,img:"",children:[]});
-saveData();
-render();
-}
-document.getElementById("newName").value = "";
-document.getElementById("newPhoto").value = "";
+    if(!admin) return alert("Pehle Admin Login On karein 🔒");
+    let name = document.getElementById("newName").value.trim();
+    if(!name) return alert("Meharbani karke Naam likhein!");
+    
+    let currentData = getCurrentData();
+    let file = document.getElementById("newPhoto").files[0];
+    
+    if(file){
+        let reader = new FileReader();
+        reader.onload = e => {
+            currentData.push({name, img: e.target.result, children: []});
+            saveData();
+            render();
+        }
+        reader.readAsDataURL(file);
+    } else {
+        currentData.push({name, img: "", children: []});
+        saveData();
+        render();
+    }
+    document.getElementById("newName").value = "";
+    document.getElementById("newPhoto").value = "";
 }
 
 function editName(i){
-if(!admin) return;
-let currentData = getCurrentData();
-let n = prompt("Naya naam:", currentData[i].name);
-if(n && n.trim()){
-currentData[i].name = n.trim();
-saveData();
-render();
-}
+    if(!admin) return;
+    let currentData = getCurrentData();
+    let n = prompt("Naya naam likhein:", currentData[i].name);
+    if(n && n.trim()){
+        currentData[i].name = n.trim();
+        saveData();
+        render();
+    }
 }
 
 function changePhoto(i){
-if(!admin) return;
-let currentData = getCurrentData();
-let inp = document.createElement("input");
-inp.type = "file";
-inp.accept = "image/*";
-inp.onchange = e => {
-let file = e.target.files[0];
-let reader = new FileReader();
-reader.onload = ev => {
-currentData[i].img = ev.target.result;
-saveData();
-render();
-}
-reader.readAsDataURL(file);
-};
-inp.click();
+    if(!admin) return;
+    let currentData = getCurrentData();
+    let inp = document.createElement("input");
+    inp.type = "file";
+    inp.accept = "image/*";
+    inp.onchange = e => {
+        let file = e.target.files[0];
+        let reader = new FileReader();
+        reader.onload = ev => {
+            currentData[i].img = ev.target.result;
+            saveData();
+            render();
+        }
+        reader.readAsDataURL(file);
+    };
+    inp.click();
 }
 
+// Global Headers Modifications listeners
 document.getElementById("topAvatar").onclick = () => {
-if(!admin) return;
-let inp = document.createElement("input");
-inp.type = "file";
-inp.accept = "image/*";
-inp.onchange = e => {
-let file = e.target.files[0];
-let reader = new FileReader();
-reader.onload = ev => {
-document.getElementById("topAvatar").src = ev.target.result;
-localStorage.setItem("topAvatar", ev.target.result);
-}
-reader.readAsDataURL(file);
-};
-inp.click();
+    if(!admin) return;
+    let inp = document.createElement("input");
+    inp.type = "file";
+    inp.accept = "image/*";
+    inp.onchange = e => {
+        let file = e.target.files[0];
+        let reader = new FileReader();
+        reader.onload = ev => {
+            document.getElementById("topAvatar").src = ev.target.result;
+            localStorage.setItem("topAvatar", ev.target.result);
+        }
+        reader.readAsDataURL(file);
+    };
+    inp.click();
 }
 
 document.getElementById("mainTitle").onclick = () => {
-if(!admin) return;
-let t = prompt("Naya title likho:", titleText.replace(/<[^>]*>/g,''));
-if(t){
-titleText = t.replace(" "," <br>") + ' <span class="pencil">✏️</span>';
-render();
-}
+    if(!admin) return;
+    let t = prompt("Naya title likho:", titleText.replace(/<[^>]*>/g,''));
+    if(t !== null){
+        titleText = t.trim().replace(" "," <br>") + ' <span class="pencil">✏️</span>';
+        localStorage.setItem("titleText", titleText);
+        render();
+    }
 }
 
 document.getElementById("creatorName").onclick = () => {
-if(!admin) return;
-let t = prompt("Creator name likho:", creatorText.replace(/<[^>]*>/g,''));
-if(t){
-creatorText = t + ' <span class="pencil">✏️</span>';
-render();
-}
+    if(!admin) return;
+    let t = prompt("Creator name likho:", creatorText.replace(/<[^>]*>/g,''));
+    if(t !== null){
+        creatorText = t.trim() + ' <span class="pencil">✏️</span>';
+        localStorage.setItem("creatorText", creatorText);
+        render();
+    }
 }
 
 document.getElementById("footerText").onclick = () => {
-if(!admin) return;
-let t = prompt("Footer text likho:", footerText.replace(/<[^>]*>/g,''));
-if(t){
-footerText = t + ' <span class="pencil">✏️</span>';
-render();
-}
+    if(!admin) return;
+    let t = prompt("Footer text likho:", footerText.replace(/<[^>]*>/g,''));
+    if(t !== null){
+        footerText = t.trim() + ' <span class="pencil">✏️</span>';
+        localStorage.setItem("footerText", footerText);
+        render();
+    }
 }
 
 function del(i){
-if(!admin) return;
-let currentData = getCurrentData();
-if(confirm(currentData[i].name + " delete karein?")){
-currentData.splice(i,1);
-saveData();
-render();
+    if(!admin) return;
+    let currentData = getCurrentData();
+    if(confirm(currentData[i].name + " ko mukammal delete karein? Is se unke bachon ka data bhi urr jaye ga.")){
+        currentData.splice(i,1);
+        saveData();
+        render();
+    }
 }
+
+// Backup Utility Functions
+function exportBackup() {
+    let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({
+        data: data, titleText: titleText, creatorText: creatorText, footerText: footerText, avatar: localStorage.getItem("topAvatar")
+    }));
+    let downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", "family_tree_backup.json");
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+}
+
+function triggerImport() {
+    document.getElementById("importFile").click();
+}
+
+function importBackup(input) {
+    let file = input.files[0];
+    if (file) {
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                let parsed = JSON.parse(e.target.result);
+                if(parsed.data) {
+                    data = parsed.data;
+                    saveData();
+                    if(parsed.titleText) { titleText = parsed.titleText; localStorage.setItem("titleText", titleText); }
+                    if(parsed.creatorText) { creatorText = parsed.creatorText; localStorage.setItem("creatorText", creatorText); }
+                    if(parsed.footerText) { footerText = parsed.footerText; localStorage.setItem("footerText", footerText); }
+                    if(parsed.avatar) { localStorage.setItem("topAvatar", parsed.avatar); document.getElementById("topAvatar").src = parsed.avatar; }
+                    render();
+                    alert("Backup successfully load ho chuka hai!");
+                }
+            } catch (err) {
+                alert("Ghalat backup file!");
+            }
+        };
+        reader.readAsText(file);
+    }
 }
 
 document.getElementById("search").oninput = render;
+
+// Load setup elements initially
 let savedAvatar = localStorage.getItem("topAvatar");
 if(savedAvatar) document.getElementById("topAvatar").src = savedAvatar;
 
