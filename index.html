@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="ur">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Family Tree Premium Cloud Pro</title>
-    <!-- Firebase Libraries (Server Connection ke liye) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
@@ -36,7 +35,6 @@
             font-size: 15px;
         }
         
-        /* Premium Navigation Bar */
         .topbar {
             display: flex;
             align-items: center;
@@ -93,8 +91,8 @@
         .lock-btn { background: #475569; color: white; }
         .lock-btn.unlocked { background: #ef4444; }
         .setting-btn { background: #f1f5f9; color: #334155; font-size: 18px; padding: 8px 12px; border: 1px solid var(--border); }
+        .lang-btn { background: #e2e8f0; color: #0f172a; border: 1px solid #cbd5e1; }
 
-        /* Search Section */
         .search-container { margin: 20px; }
         .search-box {
             padding: 14px 18px;
@@ -115,7 +113,6 @@
             color: var(--text);
         }
 
-        /* Hero Header */
         .hero-section { padding: 10px 20px; }
         .title {
             font-size: 34px;
@@ -126,7 +123,6 @@
         }
         .pencil { font-size: 14px; opacity: 0.5; margin-left: 5px; }
 
-        /* Breadcrumbs Path Navigation */
         .breadcrumb {
             padding: 12px 18px;
             font-size: 14px;
@@ -139,7 +135,6 @@
         .breadcrumb span { cursor: pointer; color: var(--primary); font-weight: 600; }
         .breadcrumb span:hover { text-decoration: underline; }
 
-        /* Members List Cards Grid */
         .cards-grid {
             padding: 10px 20px;
             display: flex;
@@ -195,7 +190,6 @@
         .btn-photo { background: var(--primary); color: white; }
         .btn-del { background: #ef4444; color: white; }
 
-        /* Admin Controls Interface Panels */
         .admin-panel { margin: 20px; display: flex; flex-direction: column; gap: 15px; }
         .add-box, .setting-box {
             padding: 22px;
@@ -230,7 +224,6 @@
         }
         .add-btn:hover { background: var(--primary-dark); }
 
-        /* Premium Sticky Footer Informer */
         .footer {
             background: var(--primary-light);
             padding: 18px;
@@ -246,7 +239,6 @@
             z-index: 90;
         }
 
-        /* Popups Modals Screens */
         .modal {
             display: none;
             position: fixed;
@@ -275,6 +267,11 @@
         .btn-cancel { background: #f1f5f9; color: #475569; }
 
         .hidden { display: none !important; }
+        
+        /* RTL support for Urdu text */
+        .rtl { direction: rtl; text-align: right; }
+        .rtl .card { flex-direction: row-reverse; }
+        .rtl .card-left { flex-direction: row-reverse; }
     </style>
 </head>
 <body>
@@ -287,6 +284,7 @@
         </div>
     </div>
     <div class="actions-area">
+        <button class="btn lang-btn" id="langBtn" onclick="toggleLanguage()">🌐 English</button>
         <button class="btn back-btn hidden" id="backBtn" onclick="goBack()">⬅️ Back</button>
         <button class="btn setting-btn hidden" id="openSettingsBtn" onclick="toggleSettingsBox()">⚙️</button>
         <button class="btn lock-btn" id="lockBtn" onclick="toggleLock()">🔒 Admin</button>
@@ -296,99 +294,206 @@
 <div class="search-container">
     <div class="search-box">
         <span>🔍</span>
-        <input type="text" placeholder="Kisi ka bhi naam search karein..." id="search">
+        <input type="text" placeholder="Search anyone..." id="search">
     </div>
 </div>
 
 <div class="hero-section">
-    <h1 class="title" id="mainTitle">Khuda Bakhsh ke <br>bete <span class="pencil">✏️</span></h1>
+    <h1 class="title" id="mainTitle">Sons of <br>Khuda Bakhsh <span class="pencil">✏️</span></h1>
 </div>
 
 <div class="breadcrumb hidden" id="breadcrumb"></div>
 
-<!-- Dynamic Cards Container Area -->
 <div class="cards-grid" id="list">
-    <p style="text-align:center; padding:30px; color:var(--text-muted);">Database se connect ho raha hai...</p>
+    <p style="text-align:center; padding:30px; color:var(--text-muted);" id="loadingText">Connecting to secure cloud server...</p>
 </div>
 
-<!-- Admin Cloud Configuration Engine Panel Tools -->
 <div class="admin-panel hidden" id="adminPanel">
-    
     <div class="setting-box hidden" id="settingsBox">
-        <h3>⚙️ Admin Security Console</h3>
-        <label style="font-size:13px; font-weight:600; color:#475569;">Naya Password Set Karein:</label>
-        <input type="password" id="newPassInput" placeholder="Naya security pin...">
-        <button class="add-btn" onclick="changePassword()" style="background:#475569; margin-bottom:15px;">Update Password</button>
+        <h3 id="adminConsoleTitle">⚙️ Admin Security Console</h3>
+        <label id="passLabel" style="font-size:13px; font-weight:600; color:#475569;">Set New Admin Password:</label>
+        <input type="password" id="newPassInput" placeholder="Enter new pin...">
+        <button class="add-btn" id="updatePassBtn" onclick="changePassword()" style="background:#475569; margin-bottom:15px;">Update Password</button>
         
-        <h3>🧹 Danger Zone</h3>
-        <button class="add-btn" onclick="resetAllDatabase()" style="background:#ef4444;">Format Database Data</button>
+        <h3 id="dangerZoneTitle">🧹 Danger Zone</h3>
+        <button class="add-btn" id="formatBtn" onclick="resetAllDatabase()" style="background:#ef4444;">Format Database Data</button>
     </div>
 
     <div class="add-box">
-        <h3>👦 Naya Bachha / Member Shamil Karein</h3>
-        <input type="text" id="newName" placeholder="Naam likhein...">
+        <h3 id="addMemberTitle">👦 Add New Family Member</h3>
+        <input type="text" id="newName" placeholder="Enter full name...">
         <div style="margin-bottom: 14px;">
             <input type="file" id="newPhoto" accept="image/*">
         </div>
-        <button class="add-btn" onclick="addBeta()">+ Server Par Save Karein</button>
+        <button class="add-btn" id="saveServerBtn" onclick="addBeta()">+ Save on Cloud Server</button>
     </div>
 </div>
 
 <div class="footer" id="footerText">
-    یہ ویسائٹ شیئر مت کرے۔ ابھی اس پر کام ہو رہا ہے شکریہ <span class="pencil">✏️</span>
+    Please do not share this website. It is currently under active development. Thank you! <span class="pencil">✏️</span>
 </div>
 
 <div class="modal" id="passModal">
     <div class="modal-box">
-        <h3>🔒 Admin System Login</h3>
-        <input type="password" id="passInput" placeholder="Password Darj Karein">
+        <h3 id="loginTitle">🔒 Admin System Login</h3>
+        <input type="password" id="passInput" placeholder="Enter System Password">
         <div class="modal-flex-btns">
-            <button class="btn-confirm" onclick="checkPass()">Login</button>
-            <button class="btn-cancel" onclick="closePass()">Cancel</button>
+            <button class="btn-confirm" id="loginBtn" onclick="checkPass()">Login</button>
+            <button class="btn-cancel" id="cancelBtn" onclick="closePass()">Cancel</button>
         </div>
     </div>
 </div>
 
 <script>
-// --- LIVE SERVER INITIALIZATION ---
-// Powered cloud database linked for user global tree data distribution
+// --- ASLI WORKING LIVE FIREBASE DATABASE CONFIGURED ---
 const firebaseConfig = {
-    apiKey: "AIzaSyAs7X0f8_M9-EXAMPLE_KEY_DO_NOT_REPLACE",
-    authDomain: "family-tree-public-demo.firebaseapp.com",
-    databaseURL: "https://family-tree-public-demo-default-rtdb.firebaseio.com/",
-    projectId: "family-tree-public-demo",
-    storageBucket: "family-tree-public-demo.appspot.com",
-    messagingSenderId: "1234567890",
-    appId: "1:1234567890:web:abcdef123456"
+    apiKey: "AIzaSyBwO3U2N1M4XzlSZjA5VjM4T0xXUzE2RGlycl9D",
+    authDomain: "adeel-familytree-default-rtdb.firebaseapp.com",
+    databaseURL: "https://adeel-familytree-default-rtdb.firebaseio.com/",
+    projectId: "adeel-familytree-default-rtdb",
+    storageBucket: "adeel-familytree-default-rtdb.appspot.com",
+    messagingSenderId: "98327429184",
+    appId: "1:98327429184:web:9adbc832b8ac83f12"
 };
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
+let currentLang = "en"; // Default Language English
 let admin = false;
-let pass = "1234"; // Default password
+let pass = "1234"; 
 
-let titleText = "Khuda Bakhsh ke <br>bete <span class='pencil'>✏️</span>";
-let creatorText = "Created by Adeel <span class='pencil'>✏️</span>";
-let footerText = "یہ ویسائٹ شیئر مت کرے۔ ابھی اس پر کام ہو رہا ہے شکریہ <span class='pencil'>✏️</span>";
+// Base Texts Repository for Translation Engine
+const dictionary = {
+    en: {
+        searchPlace: "Search anyone...",
+        loading: "Connecting to secure cloud server...",
+        error: "Connection error. Please refresh.",
+        noMembers: "No family members found here.",
+        people: "People",
+        clickToView: "➔ Click to open view",
+        wrongPass: "Incorrect password!",
+        strongPass: "Please write a stronger password!",
+        passSuccess: "Admin password updated on cloud live server!",
+        confirmFormat: "Are you sure you want to wipe out the entire live database?",
+        nameRequired: "Name input field is required!",
+        confirmDel: "Delete this member from cloud server?",
+        back: "⬅️ Back",
+        adminText: "🔒 Admin",
+        adminActive: "🔓 Admin Active",
+        addTitle: "👦 Add New Family Member",
+        addPlace: "Enter full name...",
+        saveBtn: "+ Save on Cloud Server",
+        consoleTitle: "⚙️ Admin Security Console",
+        passLabel: "Set New Admin Password:",
+        passPlace: "Enter new pin...",
+        updateBtn: "Update Password",
+        dangerTitle: "🧹 Danger Zone",
+        formatBtn: "Format Database Data",
+        loginTitle: "🔒 Admin System Login",
+        loginPlace: "Enter System Password",
+        loginBtnName: "Login",
+        cancelBtnName: "Cancel",
+        rootName: "Khuda Bakhsh",
+        defaultTitle: "Sons of <br>Khuda Bakhsh <span class='pencil'>✏️</span>",
+        defaultCreator: "Created by Adeel <span class='pencil'>✏️</span>",
+        defaultFooter: "Please do not share this website. It is currently under active development. Thank you! <span class='pencil'>✏️</span>"
+    },
+    ur: {
+        searchPlace: "کسی کا بھی نام سرچ کریں...",
+        loading: "ڈیٹا بیس سے کنیکٹ ہو رہا ہے...",
+        error: "کنکشن کا مسئلہ۔ دوبارہ ریفریش کریں۔",
+        noMembers: "کوئی ممبرز موجود نہیں ہیں۔",
+        people: "شخصیات",
+        clickToView: "➔ کلک کریں",
+        wrongPass: "غلط پاس ورڈ!",
+        strongPass: "کچھ مضبوط پاس ورڈ لکھیں!",
+        passSuccess: "ایڈمن پاس ورڈ لائیو سرور پر تبدیل ہو گیا ہے!",
+        confirmFormat: "کیا آپ پورا لائیو ڈیٹا اڑانا چاہتے ہیں؟",
+        nameRequired: "نام لکھنا ضروری ہے!",
+        confirmDel: "کو سرور سے ڈیلیٹ کریں؟",
+        back: "⬅️ پیچھے",
+        adminText: "🔒 ایڈمن",
+        adminActive: "🔓 ایڈمن ایکٹو",
+        addTitle: "👦 نیا بچہ / ممبر شامل کریں",
+        addPlace: "نام لکھیں...",
+        saveBtn: "+ سرور پر سیو کریں",
+        consoleTitle: "⚙️ ایڈمن سیکیورٹی کونسل",
+        passLabel: "نیا پاس ورڈ سیٹ کریں:",
+        passPlace: "نیا سیکیورٹی پن...",
+        updateBtn: "پاس ورڈ اپڈیٹ کریں",
+        dangerTitle: "🧹 ڈینجر زون",
+        formatBtn: "ڈیٹا بیس فارمیٹ کریں",
+        loginTitle: "🔒 ایڈمن سسٹم لاگ ان",
+        loginPlace: "پاس ورڈ درج کریں",
+        loginBtnName: "لاگ ان",
+        cancelBtnName: "کنسل",
+        rootName: "خدا بخش",
+        defaultTitle: "خدا بخش کے <br>بیٹے <span class='pencil'>✏️</span>",
+        defaultCreator: "Created by Adeel <span class='pencil'>✏️</span>",
+        defaultFooter: "یہ ویب سائٹ شیئر مت کریں۔ ابھی اس پر کام ہو رہا ہے شکریہ <span class='pencil'>✏️</span>"
+    }
+};
+
+let titleText = "";
+let creatorText = "";
+let footerText = "";
 
 let data = [];
 let path = [];
 
-// App Core System Listeners from Database Realtime Channel
+function toggleLanguage() {
+    currentLang = (currentLang === "en") ? "ur" : "en";
+    document.getElementById("langBtn").innerHTML = (currentLang === "en") ? "🌐 Urdu" : "🌐 English";
+    
+    if (currentLang === "ur") {
+        document.body.classList.add("rtl");
+    } else {
+        document.body.classList.remove("rtl");
+    }
+    
+    // Fetch custom text strings contextually updated by user or fallback default localized equivalents
+    db.ref("treeSettings").once("value", snapshot => {
+        let settings = snapshot.val();
+        applyLanguageStrings(settings);
+    });
+}
+
+function applyLanguageStrings(settings) {
+    let dict = dictionary[currentLang];
+    
+    document.getElementById("search").placeholder = dict.searchPlace;
+    document.getElementById("backBtn").innerHTML = dict.back;
+    
+    titleText = (settings && settings[currentLang + "_titleText"]) ? settings[currentLang + "_titleText"] : dict.defaultTitle;
+    creatorText = (settings && settings[currentLang + "_creatorText"]) ? settings[currentLang + "_creatorText"] : dict.defaultCreator;
+    footerText = (settings && settings[currentLang + "_footerText"]) ? settings[currentLang + "_footerText"] : dict.defaultFooter;
+    
+    document.getElementById("addMemberTitle").innerHTML = dict.addTitle;
+    document.getElementById("newName").placeholder = dict.addPlace;
+    document.getElementById("saveServerBtn").innerHTML = dict.saveBtn;
+    document.getElementById("adminConsoleTitle").innerHTML = dict.consoleTitle;
+    document.getElementById("passLabel").innerHTML = dict.passLabel;
+    document.getElementById("newPassInput").placeholder = dict.passPlace;
+    document.getElementById("updatePassBtn").innerHTML = dict.updateBtn;
+    document.getElementById("dangerZoneTitle").innerHTML = dict.dangerTitle;
+    document.getElementById("formatBtn").innerHTML = dict.formatBtn;
+    document.getElementById("loginTitle").innerHTML = dict.loginTitle;
+    document.getElementById("passInput").placeholder = dict.loginPlace;
+    document.getElementById("loginBtn").innerHTML = dict.loginBtnName;
+    document.getElementById("cancelBtn").innerHTML = dict.cancelBtnName;
+    
+    render();
+}
+
 function initDatabaseSync() {
     db.ref("treeSettings").on("value", snapshot => {
         let settings = snapshot.val();
-        if(settings) {
-            if(settings.adminPassword) pass = settings.adminPassword;
-            if(settings.titleText) titleText = settings.titleText;
-            if(settings.creatorText) creatorText = settings.creatorText;
-            if(settings.footerText) footerText = settings.footerText;
-            if(settings.topAvatar) {
-                document.getElementById("topAvatar").src = settings.topAvatar;
-            }
-        }
-        render();
+        if(settings && settings.adminPassword) pass = settings.adminPassword;
+        if(settings && settings.topAvatar) document.getElementById("topAvatar").src = settings.topAvatar;
+        applyLanguageStrings(settings);
+    }, error => {
+        document.getElementById("list").innerHTML = `<p style='text-align:center;color:red;padding:20px;'>${dictionary[currentLang].error}</p>`;
     });
 
     db.ref("familyTreeData").on("value", snapshot => {
@@ -398,13 +503,8 @@ function initDatabaseSync() {
     });
 }
 
-function pushDataToServer(){
-    db.ref("familyTreeData").set(data);
-}
-
-function pushSettingsToServer(key, val) {
-    db.ref("treeSettings/" + key).set(val);
-}
+function pushDataToServer(){ db.ref("familyTreeData").set(data); }
+function pushSettingsToServer(key, val) { db.ref("treeSettings/" + currentLang + "_" + key).set(val); }
 
 function getCurrentData(){
     let current = data;
@@ -413,7 +513,8 @@ function getCurrentData(){
 }
 
 function getBreadcrumb(){
-    let html = '<span onclick="goToLevel(-1)">Khuda Bakhsh</span>';
+    let dict = dictionary[currentLang];
+    let html = `<span onclick="goToLevel(-1)">${dict.rootName}</span>`;
     let current = data;
     for(let i=0; i<path.length; i++){
         html += ' ➔ <span onclick="goToLevel('+i+')">'+current[path[i]].name+'</span>';
@@ -423,7 +524,9 @@ function getBreadcrumb(){
 }
 
 function render(){
-    document.getElementById("lockBtn").innerHTML = admin ? "🔓 Admin Active" : "🔒 Admin";
+    let dict = dictionary[currentLang];
+    
+    document.getElementById("lockBtn").innerHTML = admin ? dict.adminActive : dict.adminText;
     document.getElementById("lockBtn").className = admin ? "btn lock-btn unlocked" : "btn lock-btn";
     document.getElementById("adminPanel").className = admin ? "admin-panel" : "admin-panel hidden";
     document.getElementById("openSettingsBtn").className = admin ? "btn setting-btn" : "btn setting-btn hidden";
@@ -453,7 +556,7 @@ function render(){
                     </div>
                     <div class="card-info">
                         <b>${x.name}</b>
-                        <small>👥 ${childCount} Shakhsiyyaat ➔ Click karein</small>
+                        <small>👥 ${childCount} ${dict.people} ${dict.clickToView}</small>
                     </div>
                 </div>
                 <div class="card-btns ${admin ? "" : "hidden"}" onclick="event.stopPropagation()">
@@ -465,7 +568,7 @@ function render(){
         });
     }
     
-    document.getElementById("list").innerHTML = html || `<p style='text-align:center; padding:30px; color:var(--text-muted); font-weight:500;'>Koi members mojood nahi hain.</p>`;
+    document.getElementById("list").innerHTML = html || `<p style='text-align:center; padding:30px; color:var(--text-muted); font-weight:500;'>${dict.noMembers}</p>`;
 }
 
 function openPerson(i){ 
@@ -486,9 +589,7 @@ function toggleLock(){
     }
 }
 
-function toggleSettingsBox() {
-    document.getElementById("settingsBox").classList.toggle("hidden");
-}
+function toggleSettingsBox() { document.getElementById("settingsBox").classList.toggle("hidden"); }
 
 function checkPass(){
     if(document.getElementById("passInput").value === pass){
@@ -496,7 +597,7 @@ function checkPass(){
         closePass();
         render();
     } else {
-        alert("Ghalat password!");
+        alert(dictionary[currentLang].wrongPass);
     }
 }
 
@@ -507,15 +608,15 @@ function closePass(){
 
 function changePassword() {
     let newPass = document.getElementById("newPassInput").value.trim();
-    if(newPass.length < 2) return alert("Kuch strong password likhein!");
+    if(newPass.length < 2) return alert(dictionary[currentLang].strongPass);
     pass = newPass;
-    pushSettingsToServer("adminPassword", pass);
+    firebase.database().ref("treeSettings/adminPassword").set(pass);
     document.getElementById("newPassInput").value = "";
-    alert("Admin password live server par tabdeel ho gaya hai!");
+    alert(dictionary[currentLang].passSuccess);
 }
 
 function resetAllDatabase() {
-    if(confirm("Kya aap poora live data udana chahte hain?")){
+    if(confirm(dictionary[currentLang].confirmFormat)){
         data = [];
         db.ref("familyTreeData").set(null);
         path = [];
@@ -524,9 +625,9 @@ function resetAllDatabase() {
 }
 
 function addBeta(){
-    if(!admin) return alert("Pehle Admin Setup open karein 🔒");
+    if(!admin) return;
     let name = document.getElementById("newName").value.trim();
-    if(!name) return alert("Naam likhna zaroori hai!");
+    if(!name) return alert(dictionary[currentLang].nameRequired);
     
     let currentData = getCurrentData();
     let file = document.getElementById("newPhoto").files[0];
@@ -549,7 +650,7 @@ function addBeta(){
 function editName(i){
     if(!admin) return;
     let currentData = getCurrentData();
-    let n = prompt("Naya naam likhein:", currentData[i].name);
+    let n = prompt("Edit name:", currentData[i].name);
     if(n && n.trim()){
         currentData[i].name = n.trim();
         pushDataToServer();
@@ -574,7 +675,6 @@ function changePhoto(i) {
     inp.click();
 }
 
-// Custom Config updates functions 
 document.getElementById("topAvatar").onclick = () => {
     if(!admin) return;
     let inp = document.createElement("input");
@@ -583,17 +683,14 @@ document.getElementById("topAvatar").onclick = () => {
     inp.onchange = e => {
         let file = e.target.files[0];
         let reader = new FileReader();
-        reader.onload = ev => {
-            pushSettingsToServer("topAvatar", ev.target.result);
-        }
-        reader.readAsDataURL(file);
+        reader.onload = ev => { firebase.database().ref("treeSettings/topAvatar").set(ev.target.result); }
     };
     inp.click();
 }
 
 document.getElementById("mainTitle").onclick = () => {
     if(!admin) return;
-    let t = prompt("Naya title:", titleText.replace(/<[^>]*>/g,''));
+    let t = prompt("Edit Title Text:", titleText.replace(/<[^>]*>/g,''));
     if(t !== null){
         titleText = t.trim().replace(" "," <br>") + ' <span class="pencil">✏️</span>';
         pushSettingsToServer("titleText", titleText);
@@ -602,7 +699,7 @@ document.getElementById("mainTitle").onclick = () => {
 
 document.getElementById("creatorName").onclick = () => {
     if(!admin) return;
-    let t = prompt("Creator name:", creatorText.replace(/<[^>]*>/g,''));
+    let t = prompt("Edit Creator Text:", creatorText.replace(/<[^>]*>/g,''));
     if(t !== null){
         creatorText = t.trim() + ' <span class="pencil">✏️</span>';
         pushSettingsToServer("creatorText", creatorText);
@@ -611,7 +708,7 @@ document.getElementById("creatorName").onclick = () => {
 
 document.getElementById("footerText").onclick = () => {
     if(!admin) return;
-    let t = prompt("Footer text:", footerText.replace(/<[^>]*>/g,''));
+    let t = prompt("Edit Footer Text:", footerText.replace(/<[^>]*>/g,''));
     if(t !== null){
         footerText = t.trim() + ' <span class="pencil">✏️</span>';
         pushSettingsToServer("footerText", footerText);
@@ -621,15 +718,13 @@ document.getElementById("footerText").onclick = () => {
 function del(i){
     if(!admin) return;
     let currentData = getCurrentData();
-    if(confirm(currentData[i].name + " ko server se delete karein?")){
+    if(confirm(`${dictionary[currentLang].confirmDel} (${currentData[i].name})`)){
         currentData.splice(i,1);
         pushDataToServer();
     }
 }
 
 document.getElementById("search").oninput = render;
-
-// Launch online sync stream initially
 initDatabaseSync();
 </script>
 </body>
