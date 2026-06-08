@@ -3,668 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Family Tree Premium Cloud Pro</title>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    
+    <title>Shajra App</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --primary: #10b981;
-            --primary-dark: #059669;
-            --primary-light: #e6f4ea;
-            --bg: #f8fafc;
-            --surface: #ffffff;
-            --text: #0f172a;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --radius-lg: 20px;
-            --radius-md: 12px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-        }
-
         body {
-            background: var(--bg);
-            color: var(--text);
-            padding-bottom: 100px;
-            font-size: 15px;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f3f4f6;
         }
-        
-        .topbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px 20px;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-        }
-        .profile-area {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .topbar img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: 3px solid var(--primary);
-            object-fit: cover;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-        .topbar img:hover { transform: scale(1.08); }
-        .topbar .info b {
-            font-size: 16px;
-            color: var(--text);
-            cursor: pointer;
-        }
-        .actions-area {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-        
-        .btn {
-            padding: 10px 16px;
-            border: none;
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s ease;
-        }
-        .back-btn { background: var(--primary); color: white; }
-        .back-btn:hover { background: var(--primary-dark); }
-        .lock-btn { background: #475569; color: white; }
-        .lock-btn.unlocked { background: #ef4444; }
-        .setting-btn { background: #f1f5f9; color: #334155; font-size: 18px; padding: 8px 12px; border: 1px solid var(--border); }
-
-        .search-container { margin: 20px; }
-        .search-box {
-            padding: 14px 18px;
-            background: var(--surface);
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-            border: 1px solid var(--border);
-        }
-        .search-box input {
-            border: none;
-            outline: none;
-            flex: 1;
-            font-size: 16px;
-            background: transparent;
-            color: var(--text);
-        }
-
-        .hero-section { padding: 10px 20px; }
-        .title {
-            font-size: 34px;
-            font-weight: 800;
-            color: #000;
-            line-height: 1.2;
-            cursor: pointer;
-        }
-        .pencil { font-size: 14px; opacity: 0.5; margin-left: 5px; }
-
-        .breadcrumb {
-            padding: 12px 18px;
-            font-size: 14px;
-            color: var(--text-muted);
-            background: var(--surface);
-            margin: 10px 20px;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border);
-        }
-        .breadcrumb span { cursor: pointer; color: var(--primary); font-weight: 600; }
-        .breadcrumb span:hover { text-decoration: underline; }
-
-        .cards-grid {
-            padding: 10px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-        .card {
-            background: var(--surface);
-            padding: 18px;
-            border-radius: var(--radius-lg);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            border: 1px solid var(--border);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.06);
-        }
-        .card-left { display: flex; align-items: center; gap: 16px; }
-        .circle {
-            width: 65px;
-            height: 65px;
-            border-radius: 50%;
-            background: var(--primary-light);
-            border: 3px solid var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            font-weight: 700;
-            color: #047857;
-            flex-shrink: 0;
-            overflow: hidden;
-        }
-        .circle img { width: 100%; height: 100%; object-fit: cover; }
-        .card-info b { font-size: 20px; color: var(--text); display: block; margin-bottom: 2px; }
-        .card-info small { color: var(--text-muted); font-size: 14px; display: flex; align-items: center; gap: 4px; }
-        
-        .card-btns { display: flex; gap: 6px; }
-        .card-btns button {
-            padding: 8px 14px;
-            border: none;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .btn-edit { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
-        .btn-photo { background: var(--primary); color: white; }
-        .btn-del { background: #ef4444; color: white; }
-
-        .admin-panel { margin: 20px; display: flex; flex-direction: column; gap: 15px; }
-        .add-box, .setting-box {
-            padding: 22px;
-            background: var(--surface);
-            border-radius: var(--radius-lg);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
-            border: 1px solid var(--border);
-        }
-        .add-box h3, .setting-box h3 { margin-bottom: 14px; font-size: 18px; color: #334155; border-bottom: 1px solid var(--border); padding-bottom: 8px;}
-        
-        input[type="text"], input[type="password"] {
-            width: 100%;
-            padding: 14px;
-            border: 1px solid #cbd5e1;
-            border-radius: var(--radius-md);
-            margin-bottom: 12px;
-            font-size: 15px;
-            outline: none;
-        }
-        input:focus { border-color: var(--primary); }
-        
-        .add-btn {
-            width: 100%;
-            padding: 14px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: var(--radius-md);
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-        .add-btn:hover { background: var(--primary-dark); }
-
-        .footer {
-            background: var(--primary-light);
-            padding: 18px;
-            text-align: center;
-            font-size: 14px;
-            font-weight: 600;
-            color: #047857;
-            border-top: 3px solid var(--primary);
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            cursor: pointer;
-            z-index: 90;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(5px);
-            z-index: 999;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal.active { display: flex; }
-        .modal-box {
-            background: var(--surface);
-            padding: 30px;
-            border-radius: var(--radius-lg);
-            width: 90%;
-            max-width: 360px;
-        }
-        .modal-box h3 { margin-bottom: 12px; font-size: 20px; text-align: center; }
-        .modal-flex-btns { display: flex; gap: 10px; margin-top: 10px; }
-        .modal-flex-btns button { flex: 1; padding: 12px; border: none; border-radius: var(--radius-md); font-size: 15px; font-weight: 600; cursor: pointer; }
-        .btn-confirm { background: var(--primary); color: white; }
-        .btn-cancel { background: #f1f5f9; color: #475569; }
-
-        .hidden { display: none !important; }
     </style>
 </head>
-<body>
+<body class="max-w-md mx-auto min-h-screen bg-gray-50 flex flex-col justify-between shadow-lg relative">
 
-<div class="topbar">
-    <div class="profile-area">
-        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/></svg>" id="topAvatar">
-        <div class="info">
-            <b id="creatorName">Created by Adeel <span class="pencil">✏️</span></b>
+    <header class="bg-white p-4 flex items-center justify-between border-b border-gray-100 shadow-sm">
+        <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-green-500">
+                <img id="header-avatar" src="https://via.placeholder.com/150" alt="Profile" class="w-full h-full object-cover">
+            </div>
+            <div>
+                <p class="text-xs text-gray-500 font-medium">Created by</p>
+                <p id="admin-name-display" class="text-sm font-bold text-gray-800">Adeel 0305-1846354</p>
+            </div>
         </div>
-    </div>
-    <div class="actions-area">
-        <button class="btn back-btn hidden" id="backBtn" onclick="goBack()">⬅️ Back</button>
-        <button class="btn setting-btn hidden" id="openSettingsBtn" onclick="toggleSettingsBox()">⚙️</button>
-        <button class="btn lock-btn" id="lockBtn" onclick="toggleLock()">🔒 Admin</button>
-    </div>
-</div>
-
-<div class="search-container">
-    <div class="search-box">
-        <span>🔍</span>
-        <input type="text" placeholder="Search anyone..." id="search">
-    </div>
-</div>
-
-<div class="hero-section">
-    <h1 class="title" id="mainTitle">Sons of <br>Khuda Bakhsh <span class="pencil">✏️</span></h1>
-</div>
-
-<div class="breadcrumb hidden" id="breadcrumb"></div>
-
-<div class="cards-grid" id="list">
-    <p style="text-align:center; padding:30px; color:var(--text-muted);" id="loadingText">Connecting to cloud server...</p>
-</div>
-
-<div class="admin-panel hidden" id="adminPanel">
-    <div class="setting-box hidden" id="settingsBox">
-        <h3 id="adminConsoleTitle">⚙️ Admin Security Console</h3>
-        <label id="passLabel" style="font-size:13px; font-weight:600; color:#475569;">Set New Admin Password:</label>
-        <input type="password" id="newPassInput" placeholder="Enter new pin...">
-        <button class="add-btn" id="updatePassBtn" onclick="changePassword()" style="background:#475569; margin-bottom:15px;">Update Password</button>
         
-        <h3 id="dangerZoneTitle">🧹 Danger Zone</h3>
-        <button class="add-btn" id="formatBtn" onclick="resetAllDatabase()" style="background:#ef4444;">Format Database Data</button>
-    </div>
-
-    <div class="add-box">
-        <h3 id="addMemberTitle">👦 Add New Family Member</h3>
-        <input type="text" id="newName" placeholder="Enter full name...">
-        <div style="margin-bottom: 14px;">
-            <input type="file" id="newPhoto" accept="image/*">
+        <div class="flex gap-2 admin-element">
+            <button onclick="toggleAdminModal()" class="w-9 h-9 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center hover:bg-gray-200 transition">
+                <i class="fa-solid fa-gear text-sm"></i>
+            </button>
+            <button class="w-9 h-9 rounded-lg bg-gray-100 text-amber-500 flex items-center justify-center hover:bg-gray-200 transition">
+                <i class="fa-solid fa-lock text-sm"></i>
+            </button>
         </div>
-        <button class="add-btn" id="saveServerBtn" onclick="addBeta()">+ Save on Cloud Server</button>
-    </div>
-</div>
+    </header>
 
-<div class="footer" id="footerText">
-    Please do not share this website. It is currently under active development. Thank you! <span class="pencil">✏️</span>
-</div>
-
-<div class="modal" id="passModal">
-    <div class="modal-box">
-        <h3 id="loginTitle">🔒 Admin System Login</h3>
-        <input type="password" id="passInput" placeholder="Enter System Password">
-        <div class="modal-flex-btns">
-            <button class="btn-confirm" id="loginBtn" onclick="checkPass()">Login</button>
-            <button class="btn-cancel" id="cancelBtn" onclick="closePass()">Cancel</button>
+    <main class="p-4 flex-1">
+        <div class="relative mb-6">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
+            <input type="text" placeholder="Kisi ko bhi search karein..." class="w-full pl-10 pr-4 py-3 bg-white rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm text-sm">
         </div>
-    </div>
-</div>
 
-<script>
-const firebaseConfig = {
-    apiKey: "AIzaSyBwO3U2N1M4XzlSZjA5VjM4T0xXUzE2RGlycl9D",
-    authDomain: "adeel-familytree-default-rtdb.firebaseapp.com",
-    databaseURL: "https://adeel-familytree-default-rtdb.firebaseio.com/",
-    projectId: "adeel-familytree-default-rtdb",
-    storageBucket: "adeel-familytree-default-rtdb.appspot.com",
-    messagingSenderId: "98327429184",
-    appId: "1:98327429184:web:9adbc832b8ac83f12"
-};
+        <h2 class="text-2xl font-bold text-slate-800 mb-4 px-1">Khuda Bakhsh ke bete</h2>
 
-let admin = false;
-let pass = "1234"; 
-
-// Pure Clean English Interface System
-const uiText = {
-    searchPlace: "Search anyone...",
-    loading: "Connecting to secure cloud server...",
-    error: "Connection error. Please refresh.",
-    noMembers: "No family members found here.",
-    people: "People",
-    clickToView: "➔ Click to open view",
-    wrongPass: "Incorrect password!",
-    strongPass: "Please write a stronger password!",
-    passSuccess: "Admin password updated on cloud live server!",
-    confirmFormat: "Are you sure you want to wipe out the entire live database?",
-    nameRequired: "Name input field is required!",
-    confirmDel: "Delete this member from cloud server?",
-    back: "⬅️ Back",
-    adminText: "🔒 Admin",
-    adminActive: "🔓 Admin Active",
-    addTitle: "👦 Add New Family Member",
-    addPlace: "Enter full name...",
-    saveBtn: "+ Save on Cloud Server",
-    consoleTitle: "⚙️ Admin Security Console",
-    passLabel: "Set New Admin Password:",
-    passPlace: "Enter new pin...",
-    updateBtn: "Update Password",
-    dangerTitle: "🧹 Danger Zone",
-    formatBtn: "Format Database Data",
-    loginTitle: "🔒 Admin System Login",
-    loginPlace: "Enter System Password",
-    loginBtnName: "Login",
-    cancelBtnName: "Cancel",
-    rootName: "Khuda Bakhsh",
-    defaultTitle: "Sons of <br>Khuda Bakhsh <span class='pencil'>✏️</span>",
-    defaultCreator: "Created by Adeel <span class='pencil'>✏️</span>",
-    defaultFooter: "Please do not share this website. It is currently under active development. Thank you! <span class='pencil'>✏️</span>"
-};
-
-let titleText = uiText.defaultTitle;
-let creatorText = uiText.defaultCreator;
-let footerText = uiText.defaultFooter;
-
-let data = [];
-let path = [];
-let db;
-
-try {
-    firebase.initializeApp(firebaseConfig);
-    db = firebase.database();
-} catch(e) {
-    console.log("Firebase Init Bypass");
-}
-
-function initDatabaseSync() {
-    // Local backup render system to avoid blank stuck screens
-    let localBackup = localStorage.getItem("familyTreeDataBackup");
-    if(localBackup) {
-        data = JSON.parse(localBackup);
-    }
-    render();
-
-    if(db) {
-        db.ref("treeSettings").on("value", snapshot => {
-            let settings = snapshot.val();
-            if(settings) {
-                if(settings.adminPassword) pass = settings.adminPassword;
-                if(settings.topAvatar) document.getElementById("topAvatar").src = settings.topAvatar;
-                if(settings.customTitleText) titleText = settings.customTitleText;
-                if(settings.customCreatorText) creatorText = settings.customCreatorText;
-                if(settings.customFooterText) footerText = settings.customFooterText;
-            }
-            render();
-        });
-
-        db.ref("familyTreeData").on("value", snapshot => {
-            let remoteData = snapshot.val();
-            if(remoteData) {
-                data = remoteData;
-                localStorage.setItem("familyTreeDataBackup", JSON.stringify(data));
-                render();
-            }
-        });
-    }
-}
-
-function pushDataToServer(){ 
-    localStorage.setItem("familyTreeDataBackup", JSON.stringify(data));
-    if(db) db.ref("familyTreeData").set(data); 
-}
-
-function pushSettingsToServer(key, val) { 
-    if(db) db.ref("treeSettings/" + key).set(val); 
-}
-
-function getCurrentData(){
-    let current = data;
-    for(let i of path) {
-        if(!current[i].children) current[i].children = [];
-        current = current[i].children;
-    }
-    return current;
-}
-
-function getBreadcrumb(){
-    let html = `<span onclick="goToLevel(-1)">${uiText.rootName}</span>`;
-    let current = data;
-    for(let i=0; i<path.length; i++){
-        html += ' ➔ <span onclick="goToLevel('+i+')">'+current[path[i]].name+'</span>';
-        current = current[path[i]].children;
-    }
-    return html;
-}
-
-function render(){
-    document.getElementById("lockBtn").innerHTML = admin ? uiText.adminActive : uiText.adminText;
-    document.getElementById("lockBtn").className = admin ? "btn lock-btn unlocked" : "btn lock-btn";
-    document.getElementById("adminPanel").className = admin ? "admin-panel" : "admin-panel hidden";
-    document.getElementById("openSettingsBtn").className = admin ? "btn setting-btn" : "btn setting-btn hidden";
-    document.getElementById("backBtn").className = path.length > 0 ? "btn back-btn" : "btn back-btn hidden";
-
-    document.getElementById("mainTitle").innerHTML = titleText;
-    document.getElementById("creatorName").innerHTML = creatorText;
-    document.getElementById("footerText").innerHTML = '📝 ' + footerText;
-
-    let bc = document.getElementById("breadcrumb");
-    if(path.length > 0){ bc.classList.remove("hidden"); bc.innerHTML = getBreadcrumb(); }
-    else bc.classList.add("hidden");
-
-    let search = document.getElementById("search").value.toLowerCase();
-    let currentData = getCurrentData();
-    let html = "";
-
-    if(currentData && currentData.length > 0) {
-        currentData.filter(x => x.name.toLowerCase().includes(search)).forEach((x, i) => {
-            let letter = x.name ? x.name[0].toUpperCase() : "?";
-            let childCount = x.children ? x.children.length : 0;
-            
-            html += `<div class="card" onclick="openPerson(${i})">
-                <div class="card-left">
-                    <div class="circle" onclick="event.stopPropagation(); changePhoto(${i})">
-                        ${x.img ? `<img src="${x.img}">` : letter}
+        <div class="space-y-3">
+            <div class="bg-white p-4 rounded-2xl flex items-center justify-between shadow-xs border border-gray-100 hover:shadow-md transition cursor-pointer">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-full bg-emerald-50 border-2 border-emerald-500 flex items-center justify-center text-emerald-700 font-bold text-xl">
+                        A
                     </div>
-                    <div class="card-info">
-                        <b>${x.name}</b>
-                        <small>👥 ${childCount} ${uiText.people} ${uiText.clickToView}</small>
+                    <div>
+                        <h3 class="font-bold text-gray-800 text-lg">Abdullah</h3>
+                        <p class="text-sm text-gray-500">2 bete &rarr;</p>
                     </div>
                 </div>
-                <div class="card-btns ${admin ? "" : "hidden"}" onclick="event.stopPropagation()">
-                    <button class="btn-edit" onclick="editName(${i})">✏️</button>
-                    <button class="btn-photo" onclick="changePhoto(${i})">🖼️</button>
-                    <button class="btn-del" onclick="del(${i})">🗑️</button>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl flex items-center justify-between shadow-xs border border-gray-100 hover:shadow-md transition cursor-pointer">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-full bg-emerald-50 border-2 border-emerald-500 flex items-center justify-center text-emerald-700 font-bold text-xl">
+                        R
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-800 text-lg">RehmaTullah</h3>
+                        <p class="text-sm text-gray-500">3 bete &rarr;</p>
+                    </div>
                 </div>
-            </div>`;
-        });
-    }
-    
-    document.getElementById("list").innerHTML = html || `<p style='text-align:center; padding:30px; color:var(--text-muted); font-weight:500;'>${uiText.noMembers}</p>`;
-}
+            </div>
 
-function openPerson(i){ 
-    let currentData = getCurrentData();
-    if(!currentData[i].children) currentData[i].children = [];
-    path.push(i); 
-    render(); 
-}
-function goBack(){ if(path.length > 0) path.pop(); render(); }
-function goToLevel(level){ path = path.slice(0, level+1); render(); }
+            <div class="bg-white p-4 rounded-2xl flex items-center justify-between shadow-xs border border-gray-100 hover:shadow-md transition cursor-pointer">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-full bg-emerald-50 border-2 border-emerald-500 flex items-center justify-center text-emerald-700 font-bold text-xl">
+                        A
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-800 text-lg">Attaullah</h3>
+                        <p class="text-sm text-gray-500">4 bete &rarr;</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
-function toggleLock(){
-    if(admin){
-        admin = false;
-        document.getElementById("settingsBox").classList.add("hidden");
-        render();
-    } else {
-        document.getElementById("passModal").classList.add("active");
-    }
-}
+    <footer id="bottom-notice" class="bg-emerald-50 p-3 text-center border-t border-emerald-100 z-10">
+        <p class="text-xs text-emerald-800 font-medium leading-relaxed">
+            📝 یہ ویب سائٹ شیئر مت کرے۔ ویب سائٹ نہ چلنے کی صورت میں بار بار اوپن مت کرے ابھی اس پر کام ہو رہا ہیں شکریہ
+        </p>
+    </footer>
 
-function toggleSettingsBox() { document.getElementById("settingsBox").classList.toggle("hidden"); }
+    <div id="admin-modal" class="fixed inset-0 bg-black/50 z-50 flex items-end justify-center hidden transition-opacity duration-300">
+        <div class="absolute inset-0" onclick="toggleAdminModal()"></div>
+        
+        <div class="bg-white w-full max-w-md rounded-t-3xl p-6 relative z-10 transform translate-y-0 transition-transform duration-300 shadow-2xl max-h-[85vh] overflow-y-auto">
+            <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6"></div>
 
-function checkPass(){
-    if(document.getElementById("passInput").value === pass){
-        admin = true;
-        closePass();
-        render();
-    } else {
-        alert(uiText.wrongPass);
-    }
-}
+            <div class="mb-6">
+                <div class="flex items-center gap-2 text-slate-500 text-xs font-bold tracking-wider mb-3">
+                    <i class="fa-solid fa-link"></i> SHARE LINK — SIRF AAP
+                </div>
+                <button onclick="copyViewOnlyLink()" class="w-full bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition active:scale-[0.99]">
+                    <i class="fa-solid fa-link text-sky-500"></i> View-Only Link Copy Karo
+                </button>
+                <p class="text-xs text-gray-400 mt-2 pl-1">Jis ko bhejein woh sirf dekh sakta hai, edit nahi kar sakta</p>
+            </div>
 
-function closePass(){
-    document.getElementById("passModal").classList.remove("active");
-    document.getElementById("passInput").value = "";
-}
+            <div class="mb-6">
+                <div class="flex items-center gap-2 text-slate-500 text-xs font-bold tracking-wider mb-3">
+                    <i class="fa-solid fa-camera"></i> TITLE TASVEER — SIRF AAP
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 rounded-full overflow-hidden border border-gray-200 bg-gray-50">
+                        <img id="modal-avatar-preview" src="https://via.placeholder.com/150" alt="Preview" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <button class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm py-2 px-4 rounded-xl transition active:scale-[0.99]">
+                            Tasveer Lagao
+                        </button>
+                        <button class="text-red-500 hover:text-red-600 font-semibold text-xs py-1 text-left pl-1 transition">
+                            Hatao
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-function changePassword() {
-    let newPass = document.getElementById("newPassInput").value.trim();
-    if(newPass.length < 2) return alert(uiText.strongPass);
-    pass = newPass;
-    if(db) db.ref("treeSettings/adminPassword").set(pass);
-    document.getElementById("newPassInput").value = "";
-    alert(uiText.passSuccess);
-}
+            <div class="mb-6">
+                <div class="flex items-center gap-2 text-slate-500 text-xs font-bold tracking-wider mb-3">
+                    <i class="fa-solid fa-key"></i> PIN BADLEIN — SIRF AAP
+                </div>
+                <div class="space-y-2">
+                    <input type="password" placeholder="Purana PIN" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                    <input type="password" placeholder="Naya PIN (4+ digits)" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                </div>
+                <button class="w-full bg-emerald-400/80 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl mt-3 transition shadow-xs active:scale-[0.99]">
+                    PIN Badlo
+                </button>
+            </div>
 
-function resetAllDatabase() {
-    if(confirm(uiText.confirmFormat)){
-        data = [];
-        localStorage.removeItem("familyTreeDataBackup");
-        if(db) db.ref("familyTreeData").set(null);
-        path = [];
-        render();
-    }
-}
+            <button onclick="toggleAdminModal()" class="w-full border border-red-200 hover:bg-red-50 text-red-600 font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition active:scale-[0.99]">
+                🔒 Admin Mode Band Karo
+            </button>
+        </div>
+    </div>
 
-function addBeta(){
-    if(!admin) return;
-    let name = document.getElementById("newName").value.trim();
-    if(!name) return alert(uiText.nameRequired);
-    
-    let currentData = getCurrentData();
-    let file = document.getElementById("newPhoto").files[0];
-    
-    if(file){
-        let reader = new FileReader();
-        reader.onload = e => {
-            currentData.push({name: name, img: e.target.result, children: []});
-            pushDataToServer();
+    <script>
+        // Modal toggler function
+        function toggleAdminModal() {
+            const modal = document.getElementById('admin-modal');
+            modal.classList.toggle('hidden');
         }
-        reader.readAsDataURL(file);
-    } else {
-        currentData.push({name: name, img: "", children: []});
-        pushDataToServer();
-    }
-    document.getElementById("newName").value = "";
-    document.getElementById("newPhoto").value = "";
-}
 
-function editName(i){
-    if(!admin) return;
-    let currentData = getCurrentData();
-    let n = prompt("Edit name:", currentData[i].name);
-    if(n && n.trim()){
-        currentData[i].name = n.trim();
-        pushDataToServer();
-    }
-}
+        // View-only link dynamic generation & copy mechanism
+        function copyViewOnlyLink() {
+            // Yeh automatic aapke current live GitHub link ke sath '?mode=view' attach kar dega
+            const currentUrl = window.location.origin + window.location.pathname;
+            const viewOnlyUrl = currentUrl + '?mode=view';
 
-function changePhoto(i) {
-    if(!admin) return;
-    let currentData = getCurrentData();
-    let inp = document.createElement("input");
-    inp.type = "file";
-    inp.accept = "image/*";
-    inp.onchange = e => {
-        let file = e.target.files[0];
-        let reader = new FileReader();
-        reader.onload = ev => {
-            currentData[i].img = ev.target.result;
-            pushDataToServer();
+            navigator.clipboard.writeText(viewOnlyUrl).then(() => {
+                alert("✨ View-Only Link Copy Ho Gaya Hai!\nAb aap isay share kar sakte hain.");
+            }).catch(err => {
+                console.error('Link copy karne me masla aya: ', err);
+            });
         }
-        reader.readAsDataURL(file);
-    };
-    inp.click();
-}
 
-document.getElementById("topAvatar").onclick = () => {
-    if(!admin) return;
-    let inp = document.createElement("input");
-    inp.type = "file";
-    inp.accept = "image/*";
-    inp.onchange = e => {
-        let file = e.target.files[0];
-        let reader = new FileReader();
-        reader.onload = ev => { if(db) db.ref("treeSettings/topAvatar").set(ev.target.result); }
-    };
-    inp.click();
-}
+        // URL Check logic: Agar link me '?mode=view' ho to admin panel hide ho jaye
+        function checkUserMode() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const mode = urlParams.get('mode');
 
-document.getElementById("mainTitle").onclick = () => {
-    if(!admin) return;
-    let t = prompt("Edit Title Text:", titleText.replace(/<[^>]*>/g,''));
-    if(t !== null){
-        titleText = t.trim().replace(" "," <br>") + ' <span class="pencil">✏️</span>';
-        pushSettingsToServer("customTitleText", titleText);
-    }
-}
+            if (mode === 'view') {
+                // Agar view mode active hai to saare admin buttons aur features block/hide kar do
+                const adminElements = document.querySelectorAll('.admin-element');
+                adminElements.forEach(el => el.style.setProperty('display', 'none', 'important'));
+                
+                // Bottom notice ya mazeed chizein update karni hon to yahan kar sakte hain
+                console.log("View-only mode activated. Admin controls hidden.");
+            }
+        }
 
-document.getElementById("creatorName").onclick = () => {
-    if(!admin) return;
-    let t = prompt("Edit Creator Text:", creatorText.replace(/<[^>]*>/g,''));
-    if(t !== null){
-        creatorText = t.trim() + ' <span class="pencil">✏️</span>';
-        pushSettingsToServer("customCreatorText", creatorText);
-    }
-}
-
-document.getElementById("footerText").onclick = () => {
-    if(!admin) return;
-    let t = prompt("Edit Footer Text:", footerText.replace(/<[^>]*>/g,''));
-    if(t !== null){
-        footerText = t.trim() + ' <span class="pencil">✏️</span>';
-        pushSettingsToServer("customFooterText", footerText);
-    }
-}
-
-function del(i){
-    if(!admin) return;
-    let currentData = getCurrentData();
-    if(confirm(`${uiText.confirmDel} (${currentData[i].name})`)){
-        currentData.splice(i,1);
-        pushDataToServer();
-    }
-}
-
-document.getElementById("search").oninput = render;
-initDatabaseSync();
-</script>
+        // Page load hote hi check karein ke user kis mode me aya hai
+        window.onload = checkUserMode;
+    </script>
 </body>
 </html>
