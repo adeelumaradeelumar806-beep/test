@@ -3,185 +3,337 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shajra App</title>
+    <title>Shajra App (Fully Functional)</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f3f4f6;
-        }
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f3f4f6; }
+        .hidden-el { display: none !important; }
     </style>
 </head>
 <body class="max-w-md mx-auto min-h-screen bg-gray-50 flex flex-col justify-between shadow-lg relative">
 
-    <header class="bg-white p-4 flex items-center justify-between border-b border-gray-100 shadow-sm">
-        <div class="flex items-center gap-3">
-            <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-green-500">
-                <img id="header-avatar" src="https://via.placeholder.com/150" alt="Profile" class="w-full h-full object-cover">
+    <div id="main-screen" class="flex flex-col flex-1 justify-between">
+        <header class="bg-white p-4 flex items-center justify-between border-b border-gray-100 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-green-500 bg-gray-200 flex items-center justify-center">
+                    <img id="avatar-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Profile" class="w-full h-full object-cover">
+                </div>
+                <div>
+                    <p class="text-xs text-gray-500 font-medium">Created by</p>
+                    <p id="admin-info-text" class="text-sm font-bold text-gray-800">Adeel 0305-1846354</p>
+                </div>
             </div>
+            
+            <div class="flex gap-2 admin-element">
+                <button onclick="openAdminPanel()" class="w-9 h-9 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center hover:bg-gray-200 transition">
+                    <i class="fa-solid fa-gear text-sm"></i>
+                </button>
+                <button class="w-9 h-9 rounded-lg bg-gray-100 text-amber-500 flex items-center justify-center hover:bg-gray-200 transition">
+                    <i class="fa-solid fa-lock text-sm"></i>
+                </button>
+            </div>
+        </header>
+
+        <main class="p-4 flex-1">
+            <div class="relative mb-6">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" id="search-input" oninput="searchMembers()" placeholder="Kisi ko bhi search karein..." class="w-full pl-10 pr-4 py-3 bg-white rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 shadow-sm text-sm">
+            </div>
+
+            <h2 id="main-title-text" class="text-2xl font-bold text-slate-800 mb-4 px-1">Khuda Bakhsh ke bete</h2>
+
+            <div id="members-container" class="space-y-3">
+                </div>
+        </main>
+
+        <footer class="bg-emerald-50 p-3 text-center border-t border-emerald-100">
+            <p id="footer-notice-text" class="text-xs text-emerald-800 font-medium leading-relaxed">
+                📝 یہ ویب سائٹ شیئر مت کرے۔ ویب سائٹ نہ چلنے کی صورت میں بار بار اوپن مت کرے ابھی اس پر کام ہو رہا ہیں شکریہ
+            </p>
+        </footer>
+    </div>
+
+
+    <div id="subtree-screen" class="flex flex-col flex-1 justify-between hidden-el">
+        <header class="bg-white p-4 flex items-center gap-4 border-b border-gray-100 shadow-sm">
+            <button onclick="closeSubTree()" class="w-9 h-9 rounded-lg bg-gray-100 text-gray-700 flex items-center justify-center">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
             <div>
-                <p class="text-xs text-gray-500 font-medium">Created by</p>
-                <p id="admin-name-display" class="text-sm font-bold text-gray-800">Adeel 0305-1846354</p>
+                <h3 id="subtree-parent-title" class="font-bold text-gray-800 text-lg">Parent Name</h3>
+                <p class="text-xs text-gray-500">Ke Bete / Family Tree</p>
             </div>
-        </div>
+        </header>
+
+        <main class="p-4 flex-1">
+            <div class="admin-element bg-white p-4 rounded-2xl border border-gray-100 shadow-sm mb-4">
+                <p class="text-xs font-bold text-gray-500 mb-2">IS MEMBER KE BETE ADD KAREIN</p>
+                <div class="flex gap-2">
+                    <input type="text" id="new-child-name" placeholder="Bete Ka Naam" class="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <button onclick="addChild()" class="bg-emerald-600 text-white px-4 py-2 rounded-xl text-sm font-bold">Add</button>
+                </div>
+            </div>
+
+            <div id="children-container" class="space-y-2">
+                </div>
+        </main>
+    </div>
+
+
+    <div id="admin-modal" class="fixed inset-0 bg-black/50 z-50 flex items-end justify-center hidden-el">
+        <div class="absolute inset-0" onclick="closeAdminPanel()"></div>
         
-        <div class="flex gap-2 admin-element">
-            <button onclick="toggleAdminModal()" class="w-9 h-9 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center hover:bg-gray-200 transition">
-                <i class="fa-solid fa-gear text-sm"></i>
-            </button>
-            <button class="w-9 h-9 rounded-lg bg-gray-100 text-amber-500 flex items-center justify-center hover:bg-gray-200 transition">
-                <i class="fa-solid fa-lock text-sm"></i>
-            </button>
-        </div>
-    </header>
-
-    <main class="p-4 flex-1">
-        <div class="relative mb-6">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </span>
-            <input type="text" placeholder="Kisi ko bhi search karein..." class="w-full pl-10 pr-4 py-3 bg-white rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm text-sm">
-        </div>
-
-        <h2 class="text-2xl font-bold text-slate-800 mb-4 px-1">Khuda Bakhsh ke bete</h2>
-
-        <div class="space-y-3">
-            <div class="bg-white p-4 rounded-2xl flex items-center justify-between shadow-xs border border-gray-100 hover:shadow-md transition cursor-pointer">
-                <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-full bg-emerald-50 border-2 border-emerald-500 flex items-center justify-center text-emerald-700 font-bold text-xl">
-                        A
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-gray-800 text-lg">Abdullah</h3>
-                        <p class="text-sm text-gray-500">2 bete &rarr;</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white p-4 rounded-2xl flex items-center justify-between shadow-xs border border-gray-100 hover:shadow-md transition cursor-pointer">
-                <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-full bg-emerald-50 border-2 border-emerald-500 flex items-center justify-center text-emerald-700 font-bold text-xl">
-                        R
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-gray-800 text-lg">RehmaTullah</h3>
-                        <p class="text-sm text-gray-500">3 bete &rarr;</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white p-4 rounded-2xl flex items-center justify-between shadow-xs border border-gray-100 hover:shadow-md transition cursor-pointer">
-                <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-full bg-emerald-50 border-2 border-emerald-500 flex items-center justify-center text-emerald-700 font-bold text-xl">
-                        A
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-gray-800 text-lg">Attaullah</h3>
-                        <p class="text-sm text-gray-500">4 bete &rarr;</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <footer id="bottom-notice" class="bg-emerald-50 p-3 text-center border-t border-emerald-100 z-10">
-        <p class="text-xs text-emerald-800 font-medium leading-relaxed">
-            📝 یہ ویب سائٹ شیئر مت کرے۔ ویب سائٹ نہ چلنے کی صورت میں بار بار اوپن مت کرے ابھی اس پر کام ہو رہا ہیں شکریہ
-        </p>
-    </footer>
-
-    <div id="admin-modal" class="fixed inset-0 bg-black/50 z-50 flex items-end justify-center hidden transition-opacity duration-300">
-        <div class="absolute inset-0" onclick="toggleAdminModal()"></div>
-        
-        <div class="bg-white w-full max-w-md rounded-t-3xl p-6 relative z-10 transform translate-y-0 transition-transform duration-300 shadow-2xl max-h-[85vh] overflow-y-auto">
+        <div class="bg-white w-full max-w-md rounded-t-3xl p-6 relative z-10 shadow-2xl max-h-[85vh] overflow-y-auto">
             <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6"></div>
 
-            <div class="mb-6">
+            <div class="mb-6 border-b border-gray-100 pb-4">
                 <div class="flex items-center gap-2 text-slate-500 text-xs font-bold tracking-wider mb-3">
                     <i class="fa-solid fa-link"></i> SHARE LINK — SIRF AAP
                 </div>
-                <button onclick="copyViewOnlyLink()" class="w-full bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition active:scale-[0.99]">
+                <button onclick="copyViewOnlyLink()" class="w-full bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition">
                     <i class="fa-solid fa-link text-sky-500"></i> View-Only Link Copy Karo
                 </button>
-                <p class="text-xs text-gray-400 mt-2 pl-1">Jis ko bhejein woh sirf dekh sakta hai, edit nahi kar sakta</p>
             </div>
 
-            <div class="mb-6">
+            <div class="mb-6 border-b border-gray-100 pb-4">
                 <div class="flex items-center gap-2 text-slate-500 text-xs font-bold tracking-wider mb-3">
-                    <i class="fa-solid fa-camera"></i> TITLE TASVEER — SIRF AAP
+                    <i class="fa-solid fa-pen-to-square"></i> APP KA TEXT EDIT KAREIN
                 </div>
-                <div class="flex items-center gap-4">
-                    <div class="w-16 h-16 rounded-full overflow-hidden border border-gray-200 bg-gray-50">
-                        <img id="modal-avatar-preview" src="https://via.placeholder.com/150" alt="Preview" class="w-full h-full object-cover">
+                <div class="space-y-3">
+                    <div>
+                        <label class="text-xs text-gray-500 font-semibold pl-1">Created By Text:</label>
+                        <input type="text" id="edit-admin-info" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                     </div>
-                    <div class="flex flex-col gap-1">
-                        <button class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm py-2 px-4 rounded-xl transition active:scale-[0.99]">
-                            Tasveer Lagao
-                        </button>
-                        <button class="text-red-500 hover:text-red-600 font-semibold text-xs py-1 text-left pl-1 transition">
-                            Hatao
-                        </button>
+                    <div>
+                        <label class="text-xs text-gray-500 font-semibold pl-1">Main Heading Title:</label>
+                        <input type="text" id="edit-main-title" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                     </div>
+                    <div>
+                        <label class="text-xs text-gray-500 font-semibold pl-1">Niche ka Urdu Notice:</label>
+                        <textarea id="edit-footer-notice" rows="2" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"></textarea>
+                    </div>
+                    <button onclick="saveTexts()" class="w-full bg-emerald-600 text-white font-bold py-2 rounded-xl text-sm">Text Changes Save Karo</button>
                 </div>
             </div>
 
-            <div class="mb-6">
+            <div class="mb-6 border-b border-gray-100 pb-4">
                 <div class="flex items-center gap-2 text-slate-500 text-xs font-bold tracking-wider mb-3">
-                    <i class="fa-solid fa-key"></i> PIN BADLEIN — SIRF AAP
+                    <i class="fa-solid fa-user-plus"></i> NAYA MEMBER ADD KAREIN
                 </div>
                 <div class="space-y-2">
-                    <input type="password" placeholder="Purana PIN" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
-                    <input type="password" placeholder="Naya PIN (4+ digits)" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                    <input type="text" id="new-member-name" placeholder="Member Ka Naam (e.g. Abdullah)" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <input type="text" id="new-member-desc" placeholder="Detail Text (e.g. 2 bete)" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    <button onclick="addNewMember()" class="w-full bg-blue-600 text-white font-bold py-2 rounded-xl text-sm">Naya Member Add Karo</button>
                 </div>
-                <button class="w-full bg-emerald-400/80 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl mt-3 transition shadow-xs active:scale-[0.99]">
-                    PIN Badlo
-                </button>
             </div>
 
-            <button onclick="toggleAdminModal()" class="w-full border border-red-200 hover:bg-red-50 text-red-600 font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition active:scale-[0.99]">
+            <button onclick="closeAdminPanel()" class="w-full border border-red-200 hover:bg-red-50 text-red-600 font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition">
                 🔒 Admin Mode Band Karo
             </button>
         </div>
     </div>
 
     <script>
-        // Modal toggler function
-        function toggleAdminModal() {
-            const modal = document.getElementById('admin-modal');
-            modal.classList.toggle('hidden');
+        // Initial Default Data (Agar browser khali ho to yeh load hoga)
+        let appData = {
+            adminInfo: "Adeel 0305-1846354",
+            mainTitle: "Khuda Bakhsh ke bete",
+            footerNotice: "📝 یہ ویب سائٹ شیئر مت کرے۔ ویب سائٹ نہ چلنے کی صورت میں بار بار اوپن مت کرے ابھی اس پر کام ہو رہا ہیں شکریہ",
+            members: [
+                { id: 1, name: "Abdullah", desc: "2 bete", children: ["Zaid", "Bakr"] },
+                { id: 2, name: "RehmaTullah", desc: "3 bete", children: ["Umar", "Usman", "Ali"] },
+                { id: 3, name: "Attaullah", desc: "4 bete", children: ["Hamza", "Bilal", "Anas", "Tariq"] }
+            ]
+        };
+
+        let currentParentId = null;
+
+        // Load Data from LocalStorage
+        function initApp() {
+            if(localStorage.getItem('shajra_db')) {
+                appData = JSON.parse(localStorage.getItem('shajra_db'));
+            } else {
+                saveToStorage();
+            }
+            renderApp();
+            checkUserMode();
         }
 
-        // View-only link dynamic generation & copy mechanism
-        function copyViewOnlyLink() {
-            // Yeh automatic aapke current live GitHub link ke sath '?mode=view' attach kar dega
-            const currentUrl = window.location.origin + window.location.pathname;
-            const viewOnlyUrl = currentUrl + '?mode=view';
+        function saveToStorage() {
+            localStorage.setItem('shajra_db', JSON.stringify(appData));
+        }
 
-            navigator.clipboard.writeText(viewOnlyUrl).then(() => {
-                alert("✨ View-Only Link Copy Ho Gaya Hai!\nAb aap isay share kar sakte hain.");
-            }).catch(err => {
-                console.error('Link copy karne me masla aya: ', err);
+        // Render everything on screen
+        function renderApp() {
+            document.getElementById('admin-info-text').innerText = appData.adminInfo;
+            document.getElementById('main-title-text').innerText = appData.mainTitle;
+            document.getElementById('footer-notice-text').innerText = appData.footerNotice;
+
+            // Fill inputs in Admin Panel with current data
+            document.getElementById('edit-admin-info').value = appData.adminInfo;
+            document.getElementById('edit-main-title').value = appData.mainTitle;
+            document.getElementById('edit-footer-notice').value = appData.footerNotice;
+
+            renderMemberList(appData.members);
+        }
+
+        function renderMemberList(list) {
+            const container = document.getElementById('members-container');
+            container.innerHTML = "";
+
+            list.forEach(m => {
+                const firstLetter = m.name.charAt(0).toUpperCase();
+                container.innerHTML += `
+                    <div onclick="openSubTree(${m.id})" class="bg-white p-4 rounded-2xl flex items-center justify-between shadow-xs border border-gray-100 hover:shadow-md transition cursor-pointer">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 rounded-full bg-emerald-50 border-2 border-emerald-500 flex items-center justify-center text-emerald-700 font-bold text-xl">
+                                ${firstLetter}
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-gray-800 text-lg">${m.name}</h3>
+                                <p class="text-sm text-gray-500">${m.children ? m.children.length : 0} bete &rarr;</p>
+                            </div>
+                        </div>
+                        <button onclick="event.stopPropagation(); deleteMember(${m.id});" class="admin-element text-red-400 hover:text-red-600 p-2 text-sm"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
             });
         }
 
-        // URL Check logic: Agar link me '?mode=view' ho to admin panel hide ho jaye
-        function checkUserMode() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const mode = urlParams.get('mode');
+        // Search logic
+        function searchMembers() {
+            const val = document.getElementById('search-input').value.toLowerCase();
+            const filtered = appData.members.filter(m => m.name.toLowerCase().includes(val));
+            renderMemberList(filtered);
+            checkUserMode(); // Taake dynamic elements par view/admin lock barqarar rahe
+        }
 
-            if (mode === 'view') {
-                // Agar view mode active hai to saare admin buttons aur features block/hide kar do
-                const adminElements = document.querySelectorAll('.admin-element');
-                adminElements.forEach(el => el.style.setProperty('display', 'none', 'important'));
-                
-                // Bottom notice ya mazeed chizein update karni hon to yahan kar sakte hain
-                console.log("View-only mode activated. Admin controls hidden.");
+        // Admin Modal Controls
+        function openAdminPanel() {
+            document.getElementById('admin-modal').classList.remove('hidden-el');
+        }
+        function closeAdminPanel() {
+            document.getElementById('admin-modal').classList.add('hidden-el');
+        }
+
+        // Save Text Headings
+        function saveTexts() {
+            appData.adminInfo = document.getElementById('edit-admin-info').value;
+            appData.mainTitle = document.getElementById('edit-main-title').value;
+            appData.footerNotice = document.getElementById('edit-footer-notice').value;
+            saveToStorage();
+            renderApp();
+            closeAdminPanel();
+        }
+
+        // Add Main Member
+        function addNewMember() {
+            const name = document.getElementById('new-member-name').value;
+            const desc = document.getElementById('new-member-desc').value;
+            if(!name) return alert("Naam likhna zaroori hai!");
+
+            const newId = appData.members.length > 0 ? Math.max(...appData.members.map(m => m.id)) + 1 : 1;
+            appData.members.push({ id: newId, name: name, desc: desc, children: [] });
+            
+            saveToStorage();
+            renderApp();
+            document.getElementById('new-member-name').value = "";
+            document.getElementById('new-member-desc').value = "";
+            closeAdminPanel();
+            checkUserMode();
+        }
+
+        // Delete Main Member
+        function deleteMember(id) {
+            if(confirm("Kya aap is member ko delete karna chahte hain?")) {
+                appData.members = appData.members.filter(m => m.id !== id);
+                saveToStorage();
+                renderApp();
+                checkUserMode();
             }
         }
 
-        // Page load hote hi check karein ke user kis mode me aya hai
-        window.onload = checkUserMode;
+        // --- SUB-TREE GENERATION LOGIC ---
+        function openSubTree(id) {
+            const member = appData.members.find(m => m.id === id);
+            if(!member) return;
+            currentParentId = id;
+
+            document.getElementById('subtree-parent-title').innerText = member.name;
+            document.getElementById('main-screen').classList.add('hidden-el');
+            document.getElementById('subtree-screen').classList.remove('hidden-el');
+
+            renderChildren();
+        }
+
+        function closeSubTree() {
+            document.getElementById('subtree-screen').classList.add('hidden-el');
+            document.getElementById('main-screen').classList.remove('hidden-el');
+            renderApp();
+            checkUserMode();
+        }
+
+        function renderChildren() {
+            const member = appData.members.find(m => m.id === currentParentId);
+            const container = document.getElementById('children-container');
+            container.innerHTML = "";
+
+            if(!member.children || member.children.length === 0) {
+                container.innerHTML = `<p class="text-gray-400 text-sm text-center py-8">Is member ka koi beta abhi added nahi hai.</p>`;
+                return;
+            }
+
+            member.children.forEach((child, index) => {
+                container.innerHTML += `
+                    <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-xs flex justify-between items-center pl-4">
+                        <span class="font-semibold text-gray-700">${child}</span>
+                        <button onclick="deleteChild(${index})" class="admin-element text-red-400 hover:text-red-500 p-1 text-xs"><i class="fa-solid fa-times text-base"></i></button>
+                    </div>
+                `;
+            });
+            checkUserMode();
+        }
+
+        function addChild() {
+            const nameInput = document.getElementById('new-child-name');
+            if(!nameInput.value) return;
+
+            const member = appData.members.find(m => m.id === currentParentId);
+            if(!member.children) member.children = [];
+            
+            member.children.push(nameInput.value);
+            saveToStorage();
+            renderChildren();
+            nameInput.value = "";
+        }
+
+        function deleteChild(index) {
+            const member = appData.members.find(m => m.id === currentParentId);
+            member.children.splice(index, 1);
+            saveToStorage();
+            renderChildren();
+        }
+
+        // View Mode restrictions
+        function copyViewOnlyLink() {
+            const currentUrl = window.location.origin + window.location.pathname;
+            const viewOnlyUrl = currentUrl + '?mode=view';
+            navigator.clipboard.writeText(viewOnlyUrl).then(() => {
+                alert("✨ View-Only Link Copy Ho Gaya Hai!");
+            });
+        }
+
+        function checkUserMode() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('mode') === 'view') {
+                document.querySelectorAll('.admin-element').forEach(el => el.style.setProperty('display', 'none', 'important'));
+            }
+        }
+
+        window.onload = initApp;
     </script>
 </body>
 </html>
